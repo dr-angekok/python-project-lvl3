@@ -16,7 +16,7 @@ poetry>=0.12
 
 Installation:
 
-1. git clone https://github.com/dr-angekok/python-project-lvl2
+1. git clone https://github.com/dr-angekok/python-project-lvl3
 
 2. make install
 
