@@ -9,11 +9,14 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
+requests = "^2.26.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.9.2"
 pytest = "^6.2.4"
 pytest-cov = "^2.12.1"
+pyfakefs = "^4.5.0"
+pook = "^1.0.1"
 
 [tool.poetry.scripts]
 page_loader = "page_loader.scripts.page_loader:main"
