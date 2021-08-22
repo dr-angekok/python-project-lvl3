@@ -22,6 +22,15 @@ def test_get_name_for_page(link, exs):
     assert page_loader.page_loader.get_name_for_page(link) == exs
 
 
+@pytest.mark.parametrize("link,exs,param1,param2", [
+    ('https://pythonworld.ru/moduli/modul-os-path.html', 'pythonworld-ru-moduli-modul-os-path_files', True, False),
+    ('https://pythonworld.ru/moduli/modul-os-path.html', 'pythonworld-ru-moduli-modul-os-path.png', False, True),])
+
+def test_get_name_for(link,exs,param1,param2):
+    assert page_loader.page_loader.get_name_for_page(link, is_folder=param1, is_image=param2) == exs
+    assert page_loader.page_loader.get_name_for_page(link, is_folder=param1, is_image=param2) == exs
+
+
 def test_cli_help_string():
     result = str(popen('poetry run page_loader -h').read())
     assert '-o OUTPUT, --output OUTPUT' in result
