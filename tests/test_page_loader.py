@@ -19,7 +19,7 @@ def test_version():
     ('tproger.ru/translations/regular-expression-python/', 'tproger-ru-translations-regular-expression-python.html')])
 
 def test_get_name_for_page(link, exs):
-    assert page_loader.page_loader.get_name_for_page(link) == exs
+    assert page_loader.page_loader.get_name(link) == exs
 
 
 @pytest.mark.parametrize("link,exs,param1,param2", [
@@ -28,8 +28,8 @@ def test_get_name_for_page(link, exs):
     ('pythonworld.ru/moduli/modul-os-path.jpg', 'pythonworld-ru-moduli-modul-os-path.jpg', False, True),])
 
 def test_get_name_for(link,exs,param1,param2):
-    assert page_loader.page_loader.get_name_for_page(link, is_folder=param1, is_files=param2) == exs
-    assert page_loader.page_loader.get_name_for_page(link, is_folder=param1, is_files=param2) == exs
+    assert page_loader.page_loader.get_name(link, is_folder=param1, is_files=param2) == exs
+    assert page_loader.page_loader.get_name(link, is_folder=param1, is_files=param2) == exs
 
 
 def test_cli_help_string():

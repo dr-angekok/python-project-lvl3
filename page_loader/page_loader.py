@@ -5,21 +5,30 @@ from re import split, sub
 import requests
 
 
-def get_file_path(path):
-    file_path_list = split(r'[\/\.]', path)
+def get_file_path(dirty_path):
+    """Clear the path from invalid characters.
+
+    Args:
+        dirty_path (str): input path
+
+    Returns:
+        [str]: clear path
+    """
+    file_path_list = split(r'[\/\.]', dirty_path)
     clear_file_path_list = [world for world in file_path_list if world]
-    file_path = '-'.join(clear_file_path_list)
-    return file_path
+    return '-'.join(clear_file_path_list)
 
 
-def get_name_for_page(page_path, is_folder=False, is_files=False):
+def get_name(page_path, is_folder=False, is_files=False):
     """Make file name frome path.
 
     Args:
         page_path (str): page path
+        is_folder (bool, optional):. Defaults to False.
+        is_files (bool, optional):. Defaults to False.
 
     Returns:
-        str: filename
+        [str]: clear name for page or file
     """
     clear_path = sub(r'https://|http://|.html', '', page_path)
     file_path = get_file_path(clear_path)
@@ -42,7 +51,7 @@ def save_page(filename, page):
 
 def download(link, folder=''):
     page = load_page(link)
-    file_name = path.join(folder, get_name_for_page(link))
+    file_name = path.join(folder, get_name(link))
     save_page(file_name, page)
 
 
