@@ -10,6 +10,10 @@ def parse_args():
         tuple: str of first_file, second_file, format
     """
     parser = argparse.ArgumentParser(description='Generate diff of two files')
-    parser.add_argument('path', metavar='<url>', type=str)
+    parser.add_argument('link', type=str)
+    parser.add_argument('-o', '--output',
+                        type=str,
+                        default='',
+                        help='folder for saving link')
     arguments = parser.parse_args()
     return arguments.path
