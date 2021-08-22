@@ -24,11 +24,12 @@ def test_get_name_for_page(link, exs):
 
 @pytest.mark.parametrize("link,exs,param1,param2", [
     ('https://pythonworld.ru/moduli/modul-os-path.html', 'pythonworld-ru-moduli-modul-os-path_files', True, False),
-    ('https://pythonworld.ru/moduli/modul-os-path.html', 'pythonworld-ru-moduli-modul-os-path.png', False, True),])
+    ('https://pythonworld.ru/moduli/modul-os-path.png', 'pythonworld-ru-moduli-modul-os-path.png', False, True),
+    ('pythonworld.ru/moduli/modul-os-path.jpg', 'pythonworld-ru-moduli-modul-os-path.jpg', False, True),])
 
 def test_get_name_for(link,exs,param1,param2):
-    assert page_loader.page_loader.get_name_for_page(link, is_folder=param1, is_image=param2) == exs
-    assert page_loader.page_loader.get_name_for_page(link, is_folder=param1, is_image=param2) == exs
+    assert page_loader.page_loader.get_name_for_page(link, is_folder=param1, is_files=param2) == exs
+    assert page_loader.page_loader.get_name_for_page(link, is_folder=param1, is_files=param2) == exs
 
 
 def test_cli_help_string():
