@@ -1,6 +1,6 @@
 """Test module fore the page_loader."""
 import tempfile
-from os import path
+from os import path, popen
 
 import page_loader
 import pook
@@ -20,6 +20,12 @@ def test_version():
 
 def test_get_name_for_page(link, exs):
     assert page_loader.page_loader.get_name_for_page(link) == exs
+
+
+def test_cli_help_string():
+    result = str(popen('poetry run page_loader -h').read())
+    assert '-o OUTPUT, --output OUTPUT' in result
+    assert 'positional arguments:\n  link' in result
 
 
 @pook.on
