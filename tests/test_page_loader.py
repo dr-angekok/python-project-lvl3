@@ -1,10 +1,20 @@
 """Test module fore the page_loader."""
-import tempfile
 from os import path, popen
 
 import page_loader
 import pook
 import pytest
+
+
+def make_path(file):
+    PATH = 'tests/fixtures/'
+    return '{0}{1}'.format(PATH, file)
+
+
+def read_out_exs(filename):
+    with open(make_path(filename), 'r') as file:
+        out = file.read()
+    return str(out)
 
 
 def test_version():
@@ -39,13 +49,18 @@ def test_cli_help_string():
 
 
 @pook.on
-def test_download_page():
+def test_download_page(tmpdir):
     LINK_FOR_TEST = 'https://ru.wikipedia.org/wiki/Python'
-    PATH_TO_FOLDER = tempfile.TemporaryDirectory()
+    PATH_TO_FOLDER = tmpdir
     PATH_TO_PAGE = 'ru-wikipedia-org-wiki-Python.html'
-    RESPONSE = {'found': 'body'}
-    mock = pook.get(LINK_FOR_TEST, reply=200, response_json=RESPONSE)
-    with PATH_TO_FOLDER as temp:
-        page_loader.download(LINK_FOR_TEST, temp)
-        assert mock.calls == 1
-        assert path.isfile(path.join(temp, PATH_TO_PAGE))
+    RESPONSE = read_out_exs('input_page.html')
+    mock = pook.get(LINK_FOR_TEST, reply=200, response_body=RESPONSE)
+    page_loader.download(LINK_FOR_TEST, PATH_TO_FOLDER)
+    assert mock.calls == 1
+    assert path.isfile('{0}/{1}'.format(PATH_TO_FOLDER, PATH_TO_PAGE))
+
+
+def test_update_links():
+    input_page = read_out_exs('input_page.html')
+    output_page = read_out_exs('output_page.html')
+    assert page_loader.page_loader.update_links(input_page, 'ru-hexlet-io-courses', 'ru-hexlet-io-courses_files')[0].decode('utf-8') == output_page
