@@ -1,8 +1,10 @@
 """Load url to files."""
-from os import path
+from os import mkdir, path
 from re import split, sub
 
-import requests
+import magic
+from bs4 import BeautifulSoup
+from requests import get as request_get
 
 
 def get_file_path(dirty_path):
@@ -40,21 +42,60 @@ def get_name(page_path, is_folder=False, is_files=False):
     return '{0}.html'.format(file_path)
 
 
+def is_not_out_link(link):
+    return all(not link.startswith(prefix) for prefix in ['www', 'http'])
+
+
+def make_update_link(url, link, path_to_folder, tag, attr, link_chain):
+    link = link.lstrip('/')
+    file_path = path.join(url, link)
+    path_to_extra_file = path.join(path_to_folder, get_name(file_path, is_files=True))
+    tag[attr] = path_to_extra_file
+    link_chain.append((file_path, path_to_extra_file))
+
+
+def update_links(page, url, path_to_folder):
+    soup = BeautifulSoup(page, "lxml")
+    links = soup.find_all(["script", "img", "link"])
+    link_chain = []
+    for tag in links:
+        for attr in ('href', 'src'):
+            if attr in tag.attrs:
+                link = tag[attr]
+                if is_not_out_link(link):
+                    make_update_link(url, link, path_to_folder, tag, attr, link_chain)
+    changed_page = soup.prettify('utf-8')
+    return changed_page, link_chain
+
+
+def save_files(source):
+    for link, path_to_file in source:
+        sourse = request_get(link)
+        mime_type = magic.from_buffer(sourse.content, mime=True)
+        TEXT_CONTENT = ('w', sourse.text)
+        text_types = {'text/html':TEXT_CONTENT,
+                      'text/css':TEXT_CONTENT,
+                      'text/javascript':TEXT_CONTENT}
+        mode, data = text_types.get(mime_type, ('wb', sourse.content))
+        with open(path_to_file, mode) as file:
+            file.write(data)
+
+
 def load_page(link):
-    page = requests.get(link)
+    page = request_get(link)
     return page.text
 
 def save_page(filename, page):
-    with open(filename, "w") as file:
+    with open(filename, "wb") as file:
         file.write(page)
 
 
 def download(link, folder=''):
     page = load_page(link)
-    file_name = path.join(folder, get_name(link))
-    save_page(file_name, page)
-
-
-
-if __name__ == '__main__':
-    print('is not a programm')
+    page_file_name = path.join(folder, get_name(link))
+    folder_name = get_name(link, is_folder=True)
+    path_to_folder = path.join(folder, folder_name)
+    mkdir(path_to_folder)
+    updated_page, page_files_links = update_links(page, link, path_to_folder)
+    save_page(page_file_name, updated_page)
+    save_files(page_files_links)
