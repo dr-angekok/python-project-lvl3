@@ -3,7 +3,7 @@
 import argparse
 
 
-def parse_args():
+def get_arguments():
     """Pars command line parameters.
 
     Returns:
@@ -16,4 +16,4 @@ def parse_args():
                         default='',
                         help='folder for saving link')
     arguments = parser.parse_args()
-    return arguments.path
+    return arguments.link, arguments.output
