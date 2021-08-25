@@ -17,6 +17,12 @@ def read_out_exs(filename):
     return str(out)
 
 
+def load_image(filename):
+    with open(make_path(filename), 'rb') as file:
+        out = file.read()
+    return out
+
+
 def test_version():
     assert page_loader.__version__ == '0.1.0'
 
@@ -50,14 +56,19 @@ def test_cli_help_string():
 
 @pook.on
 def test_download_page(tmpdir):
-    LINK_FOR_TEST = 'https://ru.wikipedia.org/wiki/Python'
+    PAGE_LINK_FOR_TEST = 'https://ru.wikipedia.org/wiki/Python'
+    IMAGE_LINK_FOR_TEST = 'https://ru.wikipedia.org/wiki/Python/assets/professions/nodejs.png'  
     PATH_TO_FOLDER = tmpdir
     PATH_TO_PAGE = 'ru-wikipedia-org-wiki-Python.html'
-    RESPONSE = read_out_exs('input_page.html')
-    mock = pook.get(LINK_FOR_TEST, reply=200, response_body=RESPONSE)
-    page_loader.download(LINK_FOR_TEST, PATH_TO_FOLDER)
-    assert mock.calls == 1
+    PAGE_RESPONSE = read_out_exs('input_page.html')
+    IMAGE_RESPONSE = load_image('nodejs.png')
+    
+    page_mock = pook.get(PAGE_LINK_FOR_TEST, reply=200, response_body=PAGE_RESPONSE)
+    image_mock = pook.get(IMAGE_LINK_FOR_TEST, reply=200, response_body='image data test str')
+    page_loader.download(PAGE_LINK_FOR_TEST, PATH_TO_FOLDER)
+    assert page_mock.calls == 1
     assert path.isfile('{0}/{1}'.format(PATH_TO_FOLDER, PATH_TO_PAGE))
+    assert image_mock.calls == 1
 
 
 def test_update_links():
