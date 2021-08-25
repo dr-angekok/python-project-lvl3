@@ -23,3 +23,7 @@ Installation:
 3. make build
 
 4. make package-install
+
+demo of page load:
+
+[![asciicast](https://asciinema.org/a/RXmPSEqxN5Nfz7dDkQfsRtCnI.svg)](https://asciinema.org/a/RXmPSEqxN5Nfz7dDkQfsRtCnI)
