@@ -27,3 +27,7 @@ Installation:
 demo of page load:
 
 [![asciicast](https://asciinema.org/a/RXmPSEqxN5Nfz7dDkQfsRtCnI.svg)](https://asciinema.org/a/RXmPSEqxN5Nfz7dDkQfsRtCnI)
+
+demo of page load logging
+
+[![asciicast](https://asciinema.org/a/nyA6NB1A12Rwj3ckdS6vBgE8a.svg)](https://asciinema.org/a/nyA6NB1A12Rwj3ckdS6vBgE8a)

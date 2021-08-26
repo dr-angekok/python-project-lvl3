@@ -1,4 +1,5 @@
 """Load url to files."""
+import logging
 from os import mkdir, path
 from re import split, sub
 
@@ -21,13 +22,14 @@ def get_file_path(dirty_path):
     return '-'.join(clear_file_path_list)
 
 
-def get_name(page_path, is_folder=False, is_files=False):
+def get_name(page_path, is_folder=False, is_files=False, is_log=False):
     """Make file name frome path.
 
     Args:
         page_path (str): page path
         is_folder (bool, optional):. Defaults to False.
         is_files (bool, optional):. Defaults to False.
+        is_log (bool, optional):. Defaults to False.
 
     Returns:
         [str]: clear name for page or file
@@ -39,6 +41,8 @@ def get_name(page_path, is_folder=False, is_files=False):
     elif is_files:
         file_path, extension = path.splitext(clear_path)
         return '{0}{1}'.format(get_file_path(file_path), extension)
+    elif is_log:
+        return '{0}{1}'.format(get_file_path(file_path), '.log')
     return '{0}.html'.format(file_path)
 
 
@@ -55,6 +59,16 @@ def make_update_link(url, link, path_to_folder, tag, attr, link_chain):
 
 
 def update_links(page, url, path_to_folder):
+    """Redirects links within the page file to a local resource.
+
+    Args:
+        page (str): page for changes
+        url (str): link to page
+        path_to_folder (str): path to folder with files
+
+    Returns:
+        [str, tuple]: page and list of links chain
+    """
     soup = BeautifulSoup(page, "lxml")
     links = soup.find_all(["script", "img", "link"])
     link_chain = []
@@ -88,14 +102,50 @@ def load_page(link):
 def save_page(filename, page):
     with open(filename, "wb") as file:
         file.write(page)
+        
+        
+def set_log_level(log_level, folder, link):
+    """Sets the logging level.
+
+    Args:
+        log_level (str): logging level: debug, info, warning, error, critical.
+        folder (str): a folder to save log file.
+        link (str): Link to page.
+    """
+    logging_levels = {'debug': logging.DEBUG,
+                     'warning': logging.WARNING,
+                     'error': logging.ERROR,
+                     'critical': logging.CRITICAL,
+                     'info': logging.INFO,}
+    logging.basicConfig(filename=path.join(folder, get_name(link, is_log=True)),
+                        filemode='w',
+                        level=logging_levels[log_level])
+    logging.info('Start')
 
 
-def download(link, folder=''):
+def download(link, folder='', log_level='info'):
+    """Loads a web page with accompanying files from a link.
+
+    Args:
+        link (str): Link to page to download.
+        folder (str, optional): a folder to save page with files. Defaults to ''.
+        log_level (str, optional): logging level: debug', 'info', 'warning', 'error', 'critical'. Defaults to 'info'.
+    """
+    set_log_level(log_level, folder, link)
+    logging.info('Starting load page')
     page = load_page(link)
     page_file_name = path.join(folder, get_name(link))
+    logging.debug('page filename {0}'.format(page_file_name))
     folder_name = get_name(link, is_folder=True)
+    logging.debug('folder name {0}'.format(folder_name))
     path_to_folder = path.join(folder, folder_name)
+    logging.info('Making folder for files')
     mkdir(path_to_folder)
+    logging.info('Starting link update')
     updated_page, page_files_links = update_links(page, link, path_to_folder)
+    logging.info('Saving page')
     save_page(page_file_name, updated_page)
+    logging.info('Saving accompanying files')
+    logging.info('Files link count {0}'.format(len(page_files_links)))
     save_files(page_files_links)
+    logging.info('All done')
