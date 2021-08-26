@@ -87,9 +87,9 @@ def save_files(source):
         sourse = request_get(link)
         mime_type = magic.from_buffer(sourse.content, mime=True)
         TEXT_CONTENT = ('w', sourse.text)
-        text_types = {'text/html':TEXT_CONTENT,
-                      'text/css':TEXT_CONTENT,
-                      'text/javascript':TEXT_CONTENT}
+        text_types = {'text/html': TEXT_CONTENT,
+                      'text/css': TEXT_CONTENT,
+                      'text/javascript': TEXT_CONTENT}
         mode, data = text_types.get(mime_type, ('wb', sourse.content))
         with open(path_to_file, mode) as file:
             file.write(data)
@@ -99,11 +99,12 @@ def load_page(link):
     page = request_get(link)
     return page.text
 
+
 def save_page(filename, page):
     with open(filename, "wb") as file:
         file.write(page)
-        
-        
+
+
 def set_log_level(log_level, folder, link):
     """Sets the logging level.
 
@@ -113,10 +114,10 @@ def set_log_level(log_level, folder, link):
         link (str): Link to page.
     """
     logging_levels = {'debug': logging.DEBUG,
-                     'warning': logging.WARNING,
-                     'error': logging.ERROR,
-                     'critical': logging.CRITICAL,
-                     'info': logging.INFO,}
+                      'warning': logging.WARNING,
+                      'error': logging.ERROR,
+                      'critical': logging.CRITICAL,
+                      'info': logging.INFO}
     logging.basicConfig(filename=path.join(folder, get_name(link, is_log=True)),
                         filemode='w',
                         level=logging_levels[log_level])

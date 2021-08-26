@@ -33,7 +33,6 @@ def test_version():
     ('http://pythonworld.ru/moduli/modul-os-path.html', 'pythonworld-ru-moduli-modul-os-path.html'),
     ('tproger.ru/translations/regular-expression-python', 'tproger-ru-translations-regular-expression-python.html'),
     ('tproger.ru/translations/regular-expression-python/', 'tproger-ru-translations-regular-expression-python.html')])
-
 def test_get_name_for_page(link, exs):
     assert page_loader.page_loader.get_name(link) == exs
 
@@ -41,9 +40,8 @@ def test_get_name_for_page(link, exs):
 @pytest.mark.parametrize("link,exs,param1,param2", [
     ('https://pythonworld.ru/moduli/modul-os-path.html', 'pythonworld-ru-moduli-modul-os-path_files', True, False),
     ('https://pythonworld.ru/moduli/modul-os-path.png', 'pythonworld-ru-moduli-modul-os-path.png', False, True),
-    ('pythonworld.ru/moduli/modul-os-path.jpg', 'pythonworld-ru-moduli-modul-os-path.jpg', False, True),])
-
-def test_get_name_for(link,exs,param1,param2):
+    ('pythonworld.ru/moduli/modul-os-path.jpg', 'pythonworld-ru-moduli-modul-os-path.jpg', False, True)])
+def test_get_name_for(link, exs, param1, param2):
     assert page_loader.page_loader.get_name(link, is_folder=param1, is_files=param2) == exs
     assert page_loader.page_loader.get_name(link, is_folder=param1, is_files=param2) == exs
 
@@ -57,12 +55,11 @@ def test_cli_help_string():
 @pook.on
 def test_download_page(tmpdir):
     PAGE_LINK_FOR_TEST = 'https://ru.wikipedia.org/wiki/Python'
-    IMAGE_LINK_FOR_TEST = 'https://ru.wikipedia.org/wiki/Python/assets/professions/nodejs.png'  
+    IMAGE_LINK_FOR_TEST = 'https://ru.wikipedia.org/wiki/Python/assets/professions/nodejs.png'
     PATH_TO_FOLDER = tmpdir
     PATH_TO_PAGE = 'ru-wikipedia-org-wiki-Python.html'
     PAGE_RESPONSE = read_out_exs('input_page.html')
-    IMAGE_RESPONSE = load_image('nodejs.png')
-    
+
     page_mock = pook.get(PAGE_LINK_FOR_TEST, reply=200, response_body=PAGE_RESPONSE)
     image_mock = pook.get(IMAGE_LINK_FOR_TEST, reply=200, response_body='image data test str')
     page_loader.download(PAGE_LINK_FOR_TEST, PATH_TO_FOLDER)
@@ -74,4 +71,6 @@ def test_download_page(tmpdir):
 def test_update_links():
     input_page = read_out_exs('input_page.html')
     output_page = read_out_exs('output_page.html')
-    assert page_loader.page_loader.update_links(input_page, 'ru-hexlet-io-courses', 'ru-hexlet-io-courses_files')[0].decode('utf-8') == output_page
+    assert page_loader.page_loader.update_links(input_page,
+                                                'ru-hexlet-io-courses',
+                                                'ru-hexlet-io-courses_files')[0].decode('utf-8') == output_page
