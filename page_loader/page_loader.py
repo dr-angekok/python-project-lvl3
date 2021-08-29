@@ -4,8 +4,28 @@ from os import mkdir, path
 from re import split, sub
 
 import magic
+import requests
 from bs4 import BeautifulSoup
-from requests import get as request_get
+
+
+class MakeDirError(Exception):
+    pass
+
+
+class SavePageError(Exception):
+    pass
+
+
+class LoadPageError(Exception):
+    pass
+
+
+class SaveFileError(Exception):
+    pass
+
+
+class LoadFileError(Exception):
+    pass
 
 
 def get_file_path(dirty_path):
@@ -84,25 +104,59 @@ def update_links(page, url, path_to_folder):
 
 def save_files(source):
     for link, path_to_file in source:
-        sourse = request_get(link)
+        try:
+            sourse = requests.get(link)
+        except (requests.exceptions.InvalidSchema,
+                requests.exceptions.MissingSchema):
+            raise LoadFileError('Wrong file address.')
+        except requests.exceptions.ConnectionError:
+            raise LoadFileError('Connection to load file error')
+        except requests.exceptions.HTTPError:
+            raise LoadFileError('Connection to load file failed')
+
         mime_type = magic.from_buffer(sourse.content, mime=True)
         TEXT_CONTENT = ('w', sourse.text)
         text_types = {'text/html': TEXT_CONTENT,
                       'text/css': TEXT_CONTENT,
                       'text/javascript': TEXT_CONTENT}
         mode, data = text_types.get(mime_type, ('wb', sourse.content))
-        with open(path_to_file, mode) as file:
-            file.write(data)
+        try:
+            with open(path_to_file, mode) as file:
+                file.write(data)
+        except IOError:
+            raise SaveFileError('Path to saving "{0}" is not accessible.'.format(path_to_file))
 
 
 def load_page(link):
-    page = request_get(link)
+    try:
+        page = requests.get(link)
+    except (requests.exceptions.InvalidSchema,
+            requests.exceptions.MissingSchema):
+        raise LoadPageError('Wrong page address.')
+    except requests.exceptions.ConnectionError:
+        raise LoadPageError('Connection error')
+    except requests.exceptions.HTTPError:
+        raise LoadPageError('Connection failed')
     return page.text
 
 
 def save_page(filename, page):
-    with open(filename, "wb") as file:
-        file.write(page)
+    if path.isfile(filename):
+        raise SavePageError('Page "{0}" is present'.format(filename))
+    try:
+        with open(filename, "wb") as file:
+            file.write(page)
+    except IOError:
+        raise SavePageError('Path to saving page is not accessible.')
+
+
+def make_folder(path_to_folder):
+    if path.isdir(path_to_folder):
+        raise MakeDirError('Folder "{0}" is present'.format(path_to_folder))
+    try:
+        mkdir(path_to_folder)
+    except IOError:
+        raise MakeDirError('Path to making folder is not accessible.')
 
 
 def set_log_level(log_level, folder, link):
@@ -141,7 +195,7 @@ def download(link, folder='', log_level='info'):
     logging.debug('folder name {0}'.format(folder_name))
     path_to_folder = path.join(folder, folder_name)
     logging.info('Making folder for files')
-    mkdir(path_to_folder)
+    make_folder(path_to_folder)
     logging.info('Starting link update')
     updated_page, page_files_links = update_links(page, link, path_to_folder)
     logging.info('Saving page')
