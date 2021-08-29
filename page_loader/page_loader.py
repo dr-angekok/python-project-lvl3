@@ -6,6 +6,7 @@ from re import split, sub
 import magic
 import requests
 from bs4 import BeautifulSoup
+from progress.bar import IncrementalBar
 
 
 class MakeDirError(Exception):
@@ -92,17 +93,21 @@ def update_links(page, url, path_to_folder):
     soup = BeautifulSoup(page, "lxml")
     links = soup.find_all(["script", "img", "link"])
     link_chain = []
+    bar = IncrementalBar('Updating links', max=len(links))
     for tag in links:
         for attr in ('href', 'src'):
             if attr in tag.attrs:
                 link = tag[attr]
                 if is_not_out_link(link):
                     make_update_link(url, link, path_to_folder, tag, attr, link_chain)
+        bar.next()
+    bar.finish()
     changed_page = soup.prettify('utf-8')
     return changed_page, link_chain
 
 
 def save_files(source):
+    bar = IncrementalBar('Saving files  ', max=len(source))
     for link, path_to_file in source:
         try:
             sourse = requests.get(link)
@@ -125,6 +130,8 @@ def save_files(source):
                 file.write(data)
         except IOError:
             raise SaveFileError('Path to saving "{0}" is not accessible.'.format(path_to_file))
+        bar.next()
+    bar.finish()
 
 
 def load_page(link):
@@ -188,14 +195,19 @@ def download(link, folder='', log_level='info'):
     """
     set_log_level(log_level, folder, link)
     logging.info('Starting load page')
+    bar = IncrementalBar('Loading page  ', max=3)
     page = load_page(link)
+    bar.next()
     page_file_name = path.join(folder, get_name(link))
     logging.debug('page filename {0}'.format(page_file_name))
     folder_name = get_name(link, is_folder=True)
     logging.debug('folder name {0}'.format(folder_name))
     path_to_folder = path.join(folder, folder_name)
     logging.info('Making folder for files')
+    bar.next()
     make_folder(path_to_folder)
+    bar.next()
+    bar.finish()
     logging.info('Starting link update')
     updated_page, page_files_links = update_links(page, link, path_to_folder)
     logging.info('Saving page')
