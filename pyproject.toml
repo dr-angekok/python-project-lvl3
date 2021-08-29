@@ -13,6 +13,7 @@ requests = "^2.26.0"
 bs4 = "^0.0.1"
 lxml = "^4.6.3"
 python-magic = "^0.4.24"
+progress = "^1.6"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.9.2"
