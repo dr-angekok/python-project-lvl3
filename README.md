@@ -6,13 +6,16 @@
 
 This is a hexlet training course project
 
-The package loads the web page as a file.
+The package downloads the page by link and all accompanying files to the specified folder.
 
 Requirements:
 
 python = "^3.8"
-
-poetry>=0.12
+requests = "^2.26.0"
+bs4 = "^0.0.1"
+lxml = "^4.6.3"
+python-magic = "^0.4.24"
+progress = "^1.6"
 
 Installation:
 
@@ -24,18 +27,6 @@ Installation:
 
 4. make package-install
 
-demo of page load:
+Demonstration of installation and launch:
 
-[![asciicast](https://asciinema.org/a/RXmPSEqxN5Nfz7dDkQfsRtCnI.svg)](https://asciinema.org/a/RXmPSEqxN5Nfz7dDkQfsRtCnI)
-
-demo of page load logging
-
-[![asciicast](https://asciinema.org/a/nyA6NB1A12Rwj3ckdS6vBgE8a.svg)](https://asciinema.org/a/nyA6NB1A12Rwj3ckdS6vBgE8a)
-
-demo of error statuses
-
-[![asciicast](https://asciinema.org/a/xVNvOiLY75MeFmMLjXjL42Zoj.svg)](https://asciinema.org/a/xVNvOiLY75MeFmMLjXjL42Zoj)
-
-demo of full run
-
-[![asciicast](https://asciinema.org/a/PQ0l7S3qa769WxEiEnlEoXVMB.svg)](https://asciinema.org/a/PQ0l7S3qa769WxEiEnlEoXVMB)
+[![asciicast](https://asciinema.org/a/BFwMGoGHiaqnfhmuosbyaSRCw.svg)](https://asciinema.org/a/BFwMGoGHiaqnfhmuosbyaSRCw)
