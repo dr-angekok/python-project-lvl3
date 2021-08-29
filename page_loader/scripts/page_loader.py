@@ -13,7 +13,7 @@ def main():
     try:
         download(path_to_page, path_to_folder, log_level=log_level)
     except Exception as e:
-        print('Has error {0}'.format(e))
+        print('\nHas error: {0}'.format(e))
     exit()
 
 
