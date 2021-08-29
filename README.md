@@ -35,3 +35,7 @@ demo of page load logging
 demo of error statuses
 
 [![asciicast](https://asciinema.org/a/xVNvOiLY75MeFmMLjXjL42Zoj.svg)](https://asciinema.org/a/xVNvOiLY75MeFmMLjXjL42Zoj)
+
+demo of full run
+
+[![asciicast](https://asciinema.org/a/PQ0l7S3qa769WxEiEnlEoXVMB.svg)](https://asciinema.org/a/PQ0l7S3qa769WxEiEnlEoXVMB)
