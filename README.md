@@ -31,3 +31,7 @@ demo of page load:
 demo of page load logging
 
 [![asciicast](https://asciinema.org/a/nyA6NB1A12Rwj3ckdS6vBgE8a.svg)](https://asciinema.org/a/nyA6NB1A12Rwj3ckdS6vBgE8a)
+
+demo of error statuses
+
+[![asciicast](https://asciinema.org/a/xVNvOiLY75MeFmMLjXjL42Zoj.svg)](https://asciinema.org/a/xVNvOiLY75MeFmMLjXjL42Zoj)
