@@ -2,6 +2,7 @@
 import logging
 from os import mkdir, path
 from re import split, sub
+from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
@@ -37,7 +38,7 @@ def get_file_path(dirty_path):
     Returns:
         [str]: clear path
     """
-    file_path_list = split(r'[\/\.]', dirty_path)
+    file_path_list = split(r'[\/\.\:\;\,]', dirty_path)
     clear_file_path_list = [world for world in file_path_list if world]
     return '-'.join(clear_file_path_list)
 
@@ -73,7 +74,7 @@ def is_not_out_link(link):
 def make_update_link(url, link, path_to_folder, tag, attr, link_chain):
     logging.debug('sourse to update_link: {0}'.format((url, link, path_to_folder, tag, attr, link_chain)))
     link = link.lstrip('/')
-    file_path = path.join(url, link)
+    file_path = urljoin(url, link)
     path_to_extra_file = path.join(path_to_folder, get_name(file_path, is_files=True))
     logging.debug('updated_link: {0}'.format(path_to_extra_file))
     tag[attr] = path_to_extra_file
@@ -108,14 +109,14 @@ def update_links(page, url, path_to_folder):
     return changed_page, link_chain
 
 
-def save_files(source):
+def save_files(url, source):
     bar = IncrementalBar('Saving files  ', max=len(source))
     for link, path_to_file in source:
         try:
-            sourse = requests.get(link)
+            sourse = requests.get(urljoin(url, link))
         except (requests.exceptions.InvalidSchema,
                 requests.exceptions.MissingSchema):
-            raise LoadFileError('Wrong file address.')
+            raise LoadFileError('Wrong file address. {0}'.format(link))
         except requests.exceptions.ConnectionError:
             raise LoadFileError('Connection to load file error')
         except requests.exceptions.HTTPError:
@@ -212,5 +213,5 @@ def download(link, folder='', log_level='info'):
     save_page(page_file_name, updated_page)
     logging.info('Saving accompanying files')
     logging.info('Files link count {0}'.format(len(page_files_links)))
-    save_files(page_files_links)
+    save_files(link, page_files_links)
     logging.info('All done')

@@ -45,7 +45,8 @@ def test_get_name_for_page(link, exs):
      'pythonworld-ru-moduli-modul-os-path_files', True, False),
     ('https://pythonworld.ru/moduli/modul-os-path.png',
      'pythonworld-ru-moduli-modul-os-path.png', False, True),
-    ('pythonworld.ru/moduli/modul-os-path.jpg', 'pythonworld-ru-moduli-modul-os-path.jpg', False, True)])
+    ('pythonworld.ru/moduli/modul-os-path.jpg', 'pythonworld-ru-moduli-modul-os-path.jpg', False, True),
+    ('https://site.com/blog/about/blog/about/assets/styles.css', 'site-com-blog-about-blog-about-assets-styles.css', False, True)])
 def test_get_name_for(link, exs, param1, param2):
     assert page_loader.page_loader.get_name(
         link, is_folder=param1, is_files=param2) == exs
@@ -63,7 +64,7 @@ def test_cli_help_string():
 @pook.on
 def test_download_page(tmpdir):
     PAGE_LINK_FOR_TEST = 'https://ru.wikipedia.org/wiki/Python'
-    IMAGE_LINK_FOR_TEST = 'https://ru.wikipedia.org/wiki/Python/assets/professions/nodejs.png'
+    IMAGE_LINK_FOR_TEST = 'https://ru.wikipedia.org/wiki/assets/professions/nodejs.png'
     PATH_TO_FOLDER = tmpdir
     PATH_TO_PAGE = 'ru-wikipedia-org-wiki-Python.html'
     PAGE_RESPONSE = read_out_exs('input_page.html')
@@ -113,4 +114,4 @@ def test_load_page_error(page_link, file_link, rep, tmpdir):
     inquiry = []
     inquiry.append([page_link, path.join(tmpdir, file_link)],)
     with pytest.raises(page_loader.page_loader.LoadFileError):
-        page_loader.page_loader.save_files(inquiry)
+        page_loader.page_loader.save_files('htts://pythonworld.ru/', inquiry)
