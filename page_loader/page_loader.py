@@ -3,7 +3,6 @@ import logging
 from os import mkdir, path
 from re import split, sub
 
-import magic
 import requests
 from bs4 import BeautifulSoup
 from progress.bar import IncrementalBar
@@ -119,12 +118,8 @@ def save_files(source):
         except requests.exceptions.HTTPError:
             raise LoadFileError('Connection to load file failed')
 
-        mime_type = magic.from_buffer(sourse.content, mime=True)
-        TEXT_CONTENT = ('w', sourse.text)
-        text_types = {'text/html': TEXT_CONTENT,
-                      'text/css': TEXT_CONTENT,
-                      'text/javascript': TEXT_CONTENT}
-        mode, data = text_types.get(mime_type, ('wb', sourse.content))
+        mode, data = ('w', sourse.text) if isinstance(sourse.content, str) else ('wb', sourse.content)
+
         try:
             with open(path_to_file, mode) as file:
                 file.write(data)
