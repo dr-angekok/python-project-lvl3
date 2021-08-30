@@ -71,9 +71,11 @@ def is_not_out_link(link):
 
 
 def make_update_link(url, link, path_to_folder, tag, attr, link_chain):
+    logging.debug('sourse to update_link: {0}'.format((url, link, path_to_folder, tag, attr, link_chain)))
     link = link.lstrip('/')
     file_path = path.join(url, link)
     path_to_extra_file = path.join(path_to_folder, get_name(file_path, is_files=True))
+    logging.debug('updated_link: {0}'.format(path_to_extra_file))
     tag[attr] = path_to_extra_file
     link_chain.append((file_path, path_to_extra_file))
 
