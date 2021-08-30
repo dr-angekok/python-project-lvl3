@@ -102,6 +102,7 @@ def update_links(page, url, path_to_folder):
         bar.next()
     bar.finish()
     changed_page = soup.prettify('utf-8')
+    logging.debug('Geted link chain: {0}'.format(link_chain))
     return changed_page, link_chain
 
 
