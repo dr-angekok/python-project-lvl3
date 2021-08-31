@@ -63,7 +63,7 @@ def test_cli_help_string():
 @pook.on
 def test_download_page(tmpdir):
     PAGE_LINK_FOR_TEST = 'https://ru.wikipedia.org/wiki/Python'
-    IMAGE_LINK_FOR_TEST = 'https://ru.wikipedia.org/wiki/Python/assets/professions/nodejs.png'
+    IMAGE_LINK_FOR_TEST = 'https://ru.wikipedia.org/assets/professions/nodejs.png'
     PATH_TO_FOLDER = tmpdir
     PATH_TO_PAGE = 'ru-wikipedia-org-wiki-Python.html'
     PAGE_RESPONSE = read_out_exs('input_page.html')
