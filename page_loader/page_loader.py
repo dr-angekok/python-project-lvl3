@@ -6,6 +6,7 @@ from re import split, sub
 import requests
 from bs4 import BeautifulSoup
 from progress.bar import IncrementalBar
+from urllib.parse import urlparse
 
 
 class MakeDirError(Exception):
@@ -37,7 +38,7 @@ def get_file_path(dirty_path):
     Returns:
         [str]: clear path
     """
-    file_path_list = split(r'[\/\.]', dirty_path)
+    file_path_list = split(r'[\/\.\:]', dirty_path)
     clear_file_path_list = [world for world in file_path_list if world]
     return '-'.join(clear_file_path_list)
 
@@ -72,8 +73,13 @@ def is_not_out_link(link):
 
 def make_update_link(url, link, path_to_folder, tag, attr, link_chain):
     logging.debug('sourse to update_link: {0}'.format((url, link, path_to_folder, tag, attr, link_chain)))
-    link = link.lstrip('/')
-    file_path = path.join(url, link)
+    if link[0] == '/':
+        parsed_url = urlparse(url)
+        base = parsed_url.netloc
+        scheme = parsed_url.scheme
+        file_path = '{0}://{1}{2}'.format(scheme, base, link)
+    else:
+        file_path = path.join(url, link)
     path_to_extra_file = path.join(path_to_folder, get_name(file_path, is_files=True))
     logging.debug('updated_link: {0}'.format(path_to_extra_file))
     tag[attr] = path_to_extra_file
@@ -111,7 +117,7 @@ def save_files(source):
     bar = IncrementalBar('Saving files  ', max=len(source))
     for link, path_to_file in source:
         try:
-            sourse = requests.get(link)
+            sourse = requests.get(link, stream = True)
         except (requests.exceptions.InvalidSchema,
                 requests.exceptions.MissingSchema):
             raise LoadFileError('Wrong file address.')
@@ -120,11 +126,12 @@ def save_files(source):
         except requests.exceptions.HTTPError:
             raise LoadFileError('Connection to load file failed')
 
-        mode, data = ('w', sourse.text) if isinstance(sourse.content, str) else ('wb', sourse.content)
+        # mode, data = ('w', sourse.text) if isinstance(sourse.content, str) else ('wb', sourse.content)
 
         try:
-            with open(path_to_file, mode) as file:
-                file.write(data)
+            with open(path_to_file, 'wb') as file:
+                for chunk in sourse.iter_content():
+                    file.write(chunk)
         except IOError:
             raise SaveFileError('Path to saving "{0}" is not accessible.'.format(path_to_file))
         bar.next()
