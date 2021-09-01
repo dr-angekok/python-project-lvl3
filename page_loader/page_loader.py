@@ -73,12 +73,8 @@ def is_not_out_link(link, url):
     link_domain = parsed_link.netloc
     url_domain = parsed_url.netloc
     if link_domain:
-        if link_domain == url_domain:
-            return False
-        else:
-            return True
-    if parsed_link.path:
-        return True
+        return link_domain == url_domain
+    return parsed_link.path
 
 
 def update_links(page, url, path_to_folder):
@@ -119,11 +115,12 @@ def update_links(page, url, path_to_folder):
     return changed_page, link_chain
 
 
-def save_files(source):
-    bar = IncrementalBar('Saving files  ', max=len(source))
-    for link, path_to_file in source:
+def save_files(link_chain):
+    bar = IncrementalBar('Saving files  ', max=len(link_chain))
+    for link, path_to_file in link_chain:
         try:
-            sourse = requests.get(link, stream = True)
+            source = requests.get(link, stream = True)
+            source.raise_for_status()
         except (requests.exceptions.InvalidSchema,
                 requests.exceptions.MissingSchema):
             raise LoadFileError('Wrong file address.')
@@ -132,12 +129,11 @@ def save_files(source):
         except requests.exceptions.HTTPError:
             raise LoadFileError('Connection to load file failed')
 
-        # mode, data = ('w', sourse.text) if isinstance(sourse.content, str) else ('wb', sourse.content)
+        mode, data = ('w', source.text) if 'text' in source.headers['Content-Type'] else ('wb', source.content)
 
         try:
-            with open(path_to_file, 'wb') as file:
-                for chunk in sourse.iter_content():
-                    file.write(chunk)
+            with open(path_to_file, mode) as file:
+                file.write(data)
         except IOError:
             raise SaveFileError('Path to saving "{0}" is not accessible.'.format(path_to_file))
         bar.next()
@@ -147,6 +143,7 @@ def save_files(source):
 def load_page(link):
     try:
         page = requests.get(link)
+        page.raise_for_status()
     except (requests.exceptions.InvalidSchema,
             requests.exceptions.MissingSchema):
         raise LoadPageError('Wrong page address.')
