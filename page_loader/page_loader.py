@@ -67,23 +67,18 @@ def get_name(page_path, is_folder=False, is_files=False, is_log=False):
     return '{0}.html'.format(file_path)
 
 
-def is_not_out_link(link):
-    return all(not link.startswith(prefix) for prefix in ['www', 'http'])
-
-
-def make_update_link(url, link, path_to_folder, tag, attr, link_chain):
-    logging.debug('sourse to update_link: {0}'.format((url, link, path_to_folder, tag, attr, link_chain)))
-    if link[0] == '/':
-        parsed_url = urlparse(url)
-        base = parsed_url.netloc
-        scheme = parsed_url.scheme
-        file_path = '{0}://{1}{2}'.format(scheme, base, link)
-    else:
-        file_path = path.join(url, link)
-    path_to_extra_file = path.join(path_to_folder, get_name(file_path, is_files=True))
-    logging.debug('updated_link: {0}'.format(path_to_extra_file))
-    tag[attr] = path_to_extra_file
-    link_chain.append((file_path, path_to_extra_file))
+def is_not_out_link(link, url):
+    parsed_link = urlparse(link)
+    parsed_url = urlparse(url)
+    link_domain = parsed_link.netloc
+    url_domain = parsed_url.netloc
+    if link_domain:
+        if link_domain == url_domain:
+            return False
+        else:
+            return True
+    if parsed_link.path:
+        return True
 
 
 def update_links(page, url, path_to_folder):
@@ -97,7 +92,7 @@ def update_links(page, url, path_to_folder):
     Returns:
         [str, tuple]: page and list of links chain
     """
-    soup = BeautifulSoup(page, "lxml")
+    soup = BeautifulSoup(page, "html.parser")
     links = soup.find_all(["script", "img", "link"])
     link_chain = []
     bar = IncrementalBar('Updating links', max=len(links))
@@ -105,8 +100,19 @@ def update_links(page, url, path_to_folder):
         for attr in ('href', 'src'):
             if attr in tag.attrs:
                 link = tag[attr]
-                if is_not_out_link(link):
-                    make_update_link(url, link, path_to_folder, tag, attr, link_chain)
+                if is_not_out_link(link, url):
+                    logging.debug('sourse to update_link: {0}'.format((url, link, path_to_folder, tag, attr, link_chain)))
+                    if link[0] == '/':
+                        parsed_url = urlparse(url)
+                        base = parsed_url.netloc
+                        scheme = parsed_url.scheme
+                        file_path = '{0}://{1}{2}'.format(scheme, base, link)
+                    else:
+                        file_path = path.join(url, link)
+                    path_to_extra_file = path.join(path_to_folder, get_name(file_path, is_files=True))
+                    logging.debug('updated_link: {0}'.format(path_to_extra_file))
+                    tag[attr] = path_to_extra_file
+                    link_chain.append((file_path, path_to_extra_file))
         bar.next()
     bar.finish()
     changed_page = soup.prettify('utf-8')
