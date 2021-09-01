@@ -6,7 +6,7 @@ from re import split, sub
 import requests
 from bs4 import BeautifulSoup
 from progress.bar import IncrementalBar
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 
 
 class MakeDirError(Exception):
@@ -98,17 +98,16 @@ def update_links(page, url, path_to_folder):
                 link = tag[attr]
                 if is_not_out_link(link, url):
                     logging.debug('sourse to update_link: {0}'.format((url, link, path_to_folder, tag, attr, link_chain)))
-                    if link[0] == '/':
-                        parsed_url = urlparse(url)
-                        base = parsed_url.netloc
-                        scheme = parsed_url.scheme
-                        file_path = '{0}://{1}{2}'.format(scheme, base, link)
-                    else:
-                        file_path = path.join(url, link)
-                    path_to_extra_file = path.join(path_to_folder, get_name(file_path, is_files=True))
+                    parsed_link = urlparse(link)
+                    parsed_url = urlparse(url)
+                    base = parsed_url.netloc
+                    scheme = parsed_url.scheme
+                    link = parsed_link.path
+                    link = urlunparse((scheme, base, link, "", "", ""))
+                    path_to_extra_file = path.join(path_to_folder, get_name(link, is_files=True))
                     logging.debug('updated_link: {0}'.format(path_to_extra_file))
                     tag[attr] = path_to_extra_file
-                    link_chain.append((file_path, path_to_extra_file))
+                    link_chain.append((link, path_to_extra_file))
         bar.next()
     bar.finish()
     changed_page = soup.prettify('utf-8')
@@ -127,7 +126,7 @@ def save_files(link_chain):
         except requests.exceptions.ConnectionError:
             raise LoadFileError('Connection to load file error')
         except requests.exceptions.HTTPError:
-            raise LoadFileError('Connection to load file failed')
+            raise LoadFileError('Connection to load file {0} failed'.format(link))
 
         mode, data = ('w', source.text) if 'text' in source.headers['Content-Type'] else ('wb', source.content)
 
