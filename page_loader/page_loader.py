@@ -128,11 +128,11 @@ def save_files(link_chain):
         except requests.exceptions.HTTPError:
             raise LoadFileError('Connection to load file {0} failed'.format(link))
 
-        mode, data = ('w', source.text) if 'text' in source.headers['Content-Type'] else ('wb', source.content)
+        #mode, data = ('w', source.text) if 'text' in source.headers['Content-Type'] else ('wb', source.content)
 
         try:
-            with open(path_to_file, mode) as file:
-                file.write(data)
+            with open(path_to_file, 'wb') as file:
+                file.write(source.content)
         except IOError:
             raise SaveFileError('Path to saving "{0}" is not accessible.'.format(path_to_file))
         bar.next()
