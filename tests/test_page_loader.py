@@ -55,7 +55,7 @@ def test_get_name_for(link, exs, param1, param2):
 
 
 def test_cli_help_string():
-    result = str(popen('poetry run page_loader -h').read())
+    result = str(popen('poetry run page-loader -h').read())
     assert '-o OUTPUT, --output OUTPUT' in result
     assert 'positional arguments:\n  link' in result
     assert 'debug,info,warning,error,critical' in result
