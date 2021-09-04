@@ -77,7 +77,7 @@ def is_not_out_link(link, url):
     return parsed_link.path
 
 
-def update_links(page, url, path_to_folder):
+def update_links(page, url, path_to_folder, folder_name):
     """Redirects links within the page file to a local resource.
 
     Args:
@@ -97,16 +97,18 @@ def update_links(page, url, path_to_folder):
             if attr in tag.attrs:
                 link = tag[attr]
                 if is_not_out_link(link, url):
-                    logging.debug('sourse to update_link: {0}'.format((url, link, path_to_folder, tag, attr, link_chain)))
+                    logging.debug('sourse to update_link: {0}'.format((url, link, folder_name, tag, attr, link_chain)))
                     parsed_link = urlparse(link)
                     parsed_url = urlparse(url)
                     base = parsed_url.netloc
                     scheme = parsed_url.scheme
                     link = parsed_link.path
                     link = urlunparse((scheme, base, link, "", "", ""))
-                    path_to_extra_file = path.join(path_to_folder, get_name(link, is_files=True))
+                    extra_file_name = get_name(link, is_files=True)
+                    path_to_extra_file = path.join(path_to_folder, extra_file_name)
+                    path_to_update_file_link = path.join(folder_name, extra_file_name)
                     logging.debug('updated_link: {0}'.format(path_to_extra_file))
-                    tag[attr] = path_to_extra_file
+                    tag[attr] = path_to_update_file_link
                     link_chain.append((link, path_to_extra_file))
         bar.next()
     bar.finish()
@@ -213,7 +215,7 @@ def download(link, folder='', log_level='info'):
     bar.next()
     bar.finish()
     logging.info('Starting link update')
-    updated_page, page_files_links = update_links(page, link, path_to_folder)
+    updated_page, page_files_links = update_links(page, link, path_to_folder, folder_name)
     logging.info('Saving page')
     save_page(page_file_name, updated_page)
     logging.info('Saving accompanying files')

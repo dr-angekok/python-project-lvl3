@@ -83,6 +83,7 @@ def test_update_links():
     output_page = read_out_exs('output_page.html')
     assert page_loader.page_loader.update_links(input_page,
                                                 'ru-hexlet-io-courses',
+                                                'tmp/ru-hexlet-io-courses_files',
                                                 'ru-hexlet-io-courses_files')[0].decode('utf-8') == output_page
 
 
