@@ -84,7 +84,7 @@ def test_update_links():
     assert page_loader.page_loader.update_links(input_page,
                                                 'ru-hexlet-io-courses',
                                                 'tmp/ru-hexlet-io-courses_files',
-                                                'ru-hexlet-io-courses_files')[0].decode('utf-8') == output_page
+                                                'ru-hexlet-io-courses_files')[0] == output_page
 
 
 def test_make_dir_error(tmpdir):
@@ -98,10 +98,10 @@ def test_save_page_error(tmpdir):
     PAGE = read_out_exs('input_page.html')
     PATH_TO_PAGE = 'ru-wikipedia-org-wiki-Python.html'
     PATH = path.join(tmpdir, PATH_TO_PAGE)
-    page_loader.page_loader.save_page(PATH, bytes(PAGE, "utf8"))
+    page_loader.page_loader.save_page(PATH, PAGE)
     with pytest.raises(page_loader.page_loader.SavePageError):
-        page_loader.page_loader.save_page(PATH, bytes(PAGE, "utf8"))
-        page_loader.page_loader.save_page('//incorrect//file.path', bytes(PAGE, "utf8"))
+        page_loader.page_loader.save_page(PATH, PAGE)
+        page_loader.page_loader.save_page('//incorrect//file.path', PAGE)
 
 
 @pook.on

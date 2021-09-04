@@ -112,7 +112,7 @@ def update_links(page, url, path_to_folder, folder_name):
                     link_chain.append((link, path_to_extra_file))
         bar.next()
     bar.finish()
-    changed_page = soup.prettify('utf-8')
+    changed_page = soup.prettify(formatter="html5")
     return changed_page, link_chain
 
 
@@ -157,7 +157,7 @@ def save_page(filename, page):
     if path.isfile(filename):
         raise SavePageError('Page "{0}" is present'.format(filename))
     try:
-        with open(filename, "wb") as file:
+        with open(filename, "w") as file:
             file.write(page)
     except IOError:
         raise SavePageError('Path to saving page is not accessible.')
