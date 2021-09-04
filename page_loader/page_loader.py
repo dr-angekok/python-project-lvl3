@@ -2,6 +2,7 @@
 import logging
 from os import mkdir, path, remove
 from re import split, sub
+from sys import stderr
 
 import requests
 from bs4 import BeautifulSoup
@@ -154,12 +155,15 @@ def load_page(link, log_filename):
         page.raise_for_status()
     except (requests.exceptions.InvalidSchema,
             requests.exceptions.MissingSchema):
+        logging.shutdown()
         remove(log_filename)
         raise LoadPageError('Wrong page address.')
     except requests.exceptions.ConnectionError:
+        logging.shutdown()
         remove(log_filename)
         raise LoadPageError('Connection error')
     except requests.exceptions.HTTPError:
+        logging.shutdown()
         remove(log_filename)
         raise LoadPageError('Connection failed')
     return page.text
@@ -201,6 +205,19 @@ def start_logging(log_level, folder, link):
     logging.basicConfig(filename=log_filename,
                         filemode='w',
                         level=logging_levels[log_level])
+    
+    logger = logging.getLogger()
+    logger.setLevel(logging_levels[log_level])
+
+    file_handler = logging.FileHandler(filename=get_name(link, is_log=True), mode='w')
+    file_handler.setLevel(logging_levels[log_level])
+
+    stream_handler = logging.StreamHandler(stderr)
+    stream_handler.setLevel(logging_levels[log_level])
+
+    logger.addHandler(file_handler)
+    logger.addHandler(stream_handler)
+    
     logging.info('Start')
     return log_filename
 
@@ -223,7 +240,6 @@ def download(link, folder='', log_level='info'):
     folder_name = get_name(link, is_folder=True)
     logging.debug('folder name {0}'.format(folder_name))
     path_to_folder = path.join(folder, folder_name)
-    logging.info('Making folder for files')
     bar.next()
     make_folder(path_to_folder)
     bar.next()
