@@ -70,6 +70,15 @@ def get_name(page_path, is_folder=False, is_files=False, is_log=False):
 
 
 def is_not_out_link(link, url):
+    """Сheck if the link is on or off the site.
+
+    Args:
+        link (str): local link
+        url (str): page url
+
+    Returns:
+        bool: True / False
+    """
     parsed_link = urlparse(link)
     parsed_url = urlparse(url)
     link_domain = parsed_link.netloc
@@ -128,6 +137,15 @@ def update_links(page, url, path_to_folder, folder_name, page_file_name):
 
 
 def save_files(link_chain, page_filename):
+    """Saves link files within the page according to the link - file name chain.
+
+    Args:
+        link_chain (list): list chain (link, filename to save)
+        page_filename (str): main page filename
+
+    Raises:
+        SaveFileError:
+    """
     bar = IncrementalBar('Saving files  ', max=len(link_chain))
     for link, path_to_file in link_chain:
         if path_to_file != page_filename:
@@ -158,6 +176,17 @@ def save_files(link_chain, page_filename):
 
 
 def load_page(link):
+    """Load page by link.
+
+    Args:
+        link (str): link to download page
+
+    Raises:
+        LoadPageError:
+
+    Returns:
+        str: loaded page
+    """
     try:
         page = requests.get(link)
         page.raise_for_status()
@@ -172,6 +201,15 @@ def load_page(link):
 
 
 def save_page(filename, page):
+    """Save page by filename.
+
+    Args:
+        filename (str):
+        page (str):
+
+    Raises:
+        SavePageError:
+    """
     if path.isfile(filename):
         raise SavePageError('Page "{0}" is present'.format(filename))
     try:
@@ -182,6 +220,14 @@ def save_page(filename, page):
 
 
 def make_folder(path_to_folder):
+    """Make folder by path.
+
+    Args:
+        path_to_folder (str):
+
+    Raises:
+        MakeDirError: Raises if the path is not reachable or exists.
+    """
     if path.isdir(path_to_folder):
         raise MakeDirError('Folder "{0}" is present'.format(path_to_folder))
     try:
@@ -191,6 +237,11 @@ def make_folder(path_to_folder):
 
 
 def set_log_level(log_level):
+    """Setting up logging.
+
+    Args:
+        log_level (str): 'debug', 'info', 'warning', 'error', 'critical'
+    """
     logging_levels = {'debug': logging.DEBUG,
                       'warning': logging.WARNING,
                       'error': logging.ERROR,
