@@ -79,7 +79,7 @@ def is_not_out_link(link, url):
     return parsed_link.path
 
 
-def update_links(page, url, path_to_folder, folder_name):
+def update_links(page, url, path_to_folder, folder_name, page_file_name):
     """Redirects links within the page file to a local resource.
 
     Args:
@@ -101,51 +101,55 @@ def update_links(page, url, path_to_folder, folder_name):
                 if is_not_out_link(link, url):
                     logging.debug('sourse to update_link: {0}'.format((url, link, folder_name, tag, attr)))
                     parsed_link = urlparse(link)
+                    link_base, link_path = parsed_link.netloc, parsed_link.path
                     parsed_url = urlparse(url)
-                    base = parsed_url.netloc
                     scheme = parsed_url.scheme
-                    link = parsed_link.path
-                    link = urlunparse((scheme, base, link, "", "", ""))
-                    extra_file_name = get_name(link, is_files=True)
-                    path_to_extra_file = path.join(path_to_folder, extra_file_name)
-                    path_to_update_file_link = path.join(folder_name, extra_file_name)
-                    logging.debug('path_to_link: {0}'.format(path_to_extra_file))
-                    logging.debug('updated_link: {0}'.format(path_to_update_file_link))
-                    tag[attr] = path_to_update_file_link
-                    logging.debug('tag[attr]: {0}'.format(tag[attr]))
-                    link_chain.append((link, path_to_extra_file))
+                    url_base, url_path = parsed_url.netloc, parsed_url.path
+                    if url_base + url_path == link_base + link_path:
+                        pass
+                    else:
+                        link = urlunparse((scheme, url_base, link_path, "", "", ""))
+                        extra_file_name = get_name(link, is_files=True)
+                        path_to_extra_file = path.join(path_to_folder, extra_file_name)
+                        path_to_update_file_link = path.join(folder_name, extra_file_name)
+                        logging.debug('path_to_link: {0}'.format(path_to_extra_file))
+                        logging.debug('updated_link: {0}'.format(path_to_update_file_link))
+                        tag[attr] = path_to_update_file_link
+                        logging.debug('tag[attr]: {0}'.format(tag[attr]))
+                        link_chain.append((link, path_to_extra_file))
         bar.next()
     bar.finish()
     changed_page = soup.prettify(formatter="html5")
     return changed_page, link_chain
 
 
-def save_files(link_chain):
+def save_files(link_chain, page_filename):
     bar = IncrementalBar('Saving files  ', max=len(link_chain))
     for link, path_to_file in link_chain:
-        try:
-            source = requests.get(link, stream = True)
-            source.raise_for_status()
-        except (requests.exceptions.InvalidSchema,
-                requests.exceptions.MissingSchema):
-            logging.warning('Wrong file address:{0}'.format(link))
-            bar.next()
-            continue
-        except requests.exceptions.ConnectionError:
-            logging.warning('Connection to load file error:{0}'.format(link))
-            bar.next()
-            continue
-        except requests.exceptions.HTTPError:
-            logging.warning('Connection to load file {0} failed'.format(link))
-            bar.next()
-            continue
+        if path_to_file != page_filename:
+            try:
+                source = requests.get(link, stream = True)
+                source.raise_for_status()
+            except (requests.exceptions.InvalidSchema,
+                    requests.exceptions.MissingSchema):
+                logging.warning('Wrong file address:{0}'.format(link))
+                bar.next()
+                continue
+            except requests.exceptions.ConnectionError:
+                logging.warning('Connection to load file error:{0}'.format(link))
+                bar.next()
+                continue
+            except requests.exceptions.HTTPError:
+                logging.warning('Connection to load file {0} failed'.format(link))
+                bar.next()
+                continue
 
-        try:
-            with open(path_to_file, 'wb') as file:
-                file.write(source.content)
-        except IOError:
-            raise SaveFileError('Path to saving "{0}" is not accessible.'.format(path_to_file))
-        bar.next()
+            try:
+                with open(path_to_file, 'wb') as file:
+                    file.write(source.content)
+            except IOError:
+                raise SaveFileError('Path to saving "{0}" is not accessible.'.format(path_to_file))
+            bar.next()
     bar.finish()
 
 
@@ -202,18 +206,14 @@ def start_logging(log_level, folder, link):
                       'critical': logging.CRITICAL,
                       'info': logging.INFO}
     log_filename = path.join(folder, get_name(link, is_log=True))
-    logging.basicConfig(filename=log_filename,
-                        filemode='w',
-                        level=logging_levels[log_level])
-    
+       
     logger = logging.getLogger()
-    logger.setLevel(logging_levels[log_level])
 
-    file_handler = logging.FileHandler(filename=get_name(link, is_log=True), mode='w')
+    file_handler = logging.FileHandler(filename=log_filename, mode='w')
     file_handler.setLevel(logging_levels[log_level])
 
     stream_handler = logging.StreamHandler(stderr)
-    stream_handler.setLevel(logging_levels[log_level])
+    stream_handler.setLevel(logging.DEBUG)
 
     logger.addHandler(file_handler)
     logger.addHandler(stream_handler)
@@ -245,11 +245,11 @@ def download(link, folder='', log_level='info'):
     bar.next()
     bar.finish()
     logging.info('Starting link update')
-    updated_page, page_files_links = update_links(page, link, path_to_folder, folder_name)
+    updated_page, page_files_links = update_links(page, link, path_to_folder, folder_name, page_file_name)
     logging.info('Saving page')
     save_page(page_file_name, updated_page)
     logging.info('Saving accompanying files')
     logging.info('Files link count {0}'.format(len(page_files_links)))
-    save_files(page_files_links)
+    save_files(page_files_links, page_file_name)
     logging.info('All done')
     return page_file_name
