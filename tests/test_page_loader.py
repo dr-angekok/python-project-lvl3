@@ -59,12 +59,12 @@ def test_cli_help_string():
     assert '-o OUTPUT, --output OUTPUT' in result
     assert 'positional arguments:\n  link' in result
     assert 'debug,info,warning,error,critical' in result
-    
-    
+
+
 def test_cli_log_w_err(tmpdir):
-    result = str(popen('poetry run page-loader -o {0} http://badsite'.format(tmpdir)).read())
+    popen('poetry run page-loader -o {0} http://badsite'.format(tmpdir)).read()
     assert not listdir(tmpdir)
-    
+
 
 @pook.on
 def test_download_page(tmpdir):

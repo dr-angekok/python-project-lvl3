@@ -1,6 +1,6 @@
 """Load url to files."""
 import logging
-from os import mkdir, path, remove
+from os import mkdir, path
 from re import split, sub
 from sys import stderr
 
@@ -107,11 +107,10 @@ def update_links(page, url, path_to_folder, folder_name, page_file_name):
                     url_base, url_path = parsed_url.netloc, parsed_url.path
                     if url_base + url_path == link_base + link_path:
                         link = urlunparse((scheme, url_base, link_path, "", "", ""))
-                        logging.debug('path_to_link: {0}'.format(path_to_extra_file))
+                        logging.debug('path_to_link: {0}'.format(page_file_name))
                         tag[attr] = page_file_name
                         logging.debug('tag[attr]: {0}'.format(tag[attr]))
                         link_chain.append((link, page_file_name))
-                        
                     else:
                         link = urlunparse((scheme, url_base, link_path, "", "", ""))
                         extra_file_name = get_name(link, is_files=True)
@@ -133,7 +132,7 @@ def save_files(link_chain, page_filename):
     for link, path_to_file in link_chain:
         if path_to_file != page_filename:
             try:
-                source = requests.get(link, stream = True)
+                source = requests.get(link, stream=True)
                 source.raise_for_status()
             except (requests.exceptions.InvalidSchema,
                     requests.exceptions.MissingSchema):
@@ -189,8 +188,8 @@ def make_folder(path_to_folder):
         mkdir(path_to_folder)
     except IOError:
         raise MakeDirError('Path to making folder is not accessible.')
-    
-    
+
+
 def set_log_level(log_level):
     logging_levels = {'debug': logging.DEBUG,
                       'warning': logging.WARNING,
