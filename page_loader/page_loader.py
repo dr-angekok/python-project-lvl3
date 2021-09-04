@@ -128,8 +128,6 @@ def save_files(link_chain):
         except requests.exceptions.HTTPError:
             raise LoadFileError('Connection to load file {0} failed'.format(link))
 
-        #mode, data = ('w', source.text) if 'text' in source.headers['Content-Type'] else ('wb', source.content)
-
         try:
             with open(path_to_file, 'wb') as file:
                 file.write(source.content)
@@ -222,3 +220,4 @@ def download(link, folder='', log_level='info'):
     logging.info('Files link count {0}'.format(len(page_files_links)))
     save_files(page_files_links)
     logging.info('All done')
+    return page_file_name
