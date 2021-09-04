@@ -61,6 +61,7 @@ def get_name(page_path, is_folder=False, is_files=False, is_log=False):
         return '{0}_files'.format(file_path)
     elif is_files:
         file_path, extension = path.splitext(clear_path)
+        extension = '' if extension == '.html' else extension
         return '{0}{1}'.format(get_file_path(file_path), extension)
     elif is_log:
         return '{0}{1}'.format(get_file_path(file_path), '.log')
