@@ -45,7 +45,8 @@ def test_get_name_for_page(link, exs):
      'pythonworld-ru-moduli-modul-os-path_files', True, False),
     ('https://pythonworld.ru/moduli/modul-os-path.png',
      'pythonworld-ru-moduli-modul-os-path.png', False, True),
-    ('pythonworld.ru/moduli/modul-os-path.jpg', 'pythonworld-ru-moduli-modul-os-path.jpg', False, True)])
+    ('pythonworld.ru/moduli/modul-os-path.jpg', 'pythonworld-ru-moduli-modul-os-path.jpg', False, True),
+    ('pythonworld.ru/moduli/modul-os-path.html', 'pythonworld-ru-moduli-modul-os-path', False, True)])
 def test_get_name_for(link, exs, param1, param2):
     assert page_loader.page_loader.get_name(
         link, is_folder=param1, is_files=param2) == exs
