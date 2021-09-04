@@ -11,11 +11,17 @@ The package downloads the page by link and all accompanying files to the specifi
 Requirements:
 
 python = "^3.8"
+
 requests = "^2.26.0"
+
 bs4 = "^0.0.1"
+
 lxml = "^4.6.3"
+
 python-magic = "^0.4.24"
+
 progress = "^1.6"
+
 
 Installation:
 
@@ -27,6 +33,14 @@ Installation:
 
 4. make package-install
 
+demo of one page load:
+
+[![asciicast](https://asciinema.org/a/RXmPSEqxN5Nfz7dDkQfsRtCnI.svg)](https://asciinema.org/a/RXmPSEqxN5Nfz7dDkQfsRtCnI)
+
 Demonstration of installation and launch:
 
 [![asciicast](https://asciinema.org/a/BFwMGoGHiaqnfhmuosbyaSRCw.svg)](https://asciinema.org/a/BFwMGoGHiaqnfhmuosbyaSRCw)
+
+Final demonstration:
+
+[![asciicast](https://asciinema.org/a/2Hj2RBepk3FPIp8y1bPCWr4Q5.svg)](https://asciinema.org/a/2Hj2RBepk3FPIp8y1bPCWr4Q5)
