@@ -1,6 +1,6 @@
 """Load url to files."""
 import logging
-from os import mkdir, path
+from os import mkdir, path, remove
 from re import split, sub
 
 import requests
@@ -127,11 +127,17 @@ def save_files(link_chain):
             source.raise_for_status()
         except (requests.exceptions.InvalidSchema,
                 requests.exceptions.MissingSchema):
-            raise LoadFileError('Wrong file address.')
+            logging.warning('Wrong file address:{0}'.format(link))
+            bar.next()
+            continue
         except requests.exceptions.ConnectionError:
-            raise LoadFileError('Connection to load file error')
+            logging.warning('Connection to load file error:{0}'.format(link))
+            bar.next()
+            continue
         except requests.exceptions.HTTPError:
-            raise LoadFileError('Connection to load file {0} failed'.format(link))
+            logging.warning('Connection to load file {0} failed'.format(link))
+            bar.next()
+            continue
 
         try:
             with open(path_to_file, 'wb') as file:
@@ -142,16 +148,19 @@ def save_files(link_chain):
     bar.finish()
 
 
-def load_page(link):
+def load_page(link, log_filename):
     try:
         page = requests.get(link)
         page.raise_for_status()
     except (requests.exceptions.InvalidSchema,
             requests.exceptions.MissingSchema):
+        remove(log_filename)
         raise LoadPageError('Wrong page address.')
     except requests.exceptions.ConnectionError:
+        remove(log_filename)
         raise LoadPageError('Connection error')
     except requests.exceptions.HTTPError:
+        remove(log_filename)
         raise LoadPageError('Connection failed')
     return page.text
 
@@ -175,7 +184,7 @@ def make_folder(path_to_folder):
         raise MakeDirError('Path to making folder is not accessible.')
 
 
-def set_log_level(log_level, folder, link):
+def start_logging(log_level, folder, link):
     """Sets the logging level.
 
     Args:
@@ -188,10 +197,12 @@ def set_log_level(log_level, folder, link):
                       'error': logging.ERROR,
                       'critical': logging.CRITICAL,
                       'info': logging.INFO}
-    logging.basicConfig(filename=path.join(folder, get_name(link, is_log=True)),
+    log_filename = path.join(folder, get_name(link, is_log=True))
+    logging.basicConfig(filename=log_filename,
                         filemode='w',
                         level=logging_levels[log_level])
     logging.info('Start')
+    return log_filename
 
 
 def download(link, folder='', log_level='info'):
@@ -202,10 +213,10 @@ def download(link, folder='', log_level='info'):
         folder (str, optional): a folder to save page with files. Defaults to ''.
         log_level (str, optional): logging level: debug', 'info', 'warning', 'error', 'critical'. Defaults to 'info'.
     """
-    set_log_level(log_level, folder, link)
+    log_filename = start_logging(log_level, folder, link)
     logging.info('Starting load page')
     bar = IncrementalBar('Loading page  ', max=3)
-    page = load_page(link)
+    page = load_page(link, log_filename)
     bar.next()
     page_file_name = path.join(folder, get_name(link))
     logging.debug('page filename {0}'.format(page_file_name))

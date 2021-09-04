@@ -1,5 +1,5 @@
 """Test module fore the page_loader."""
-from os import path, popen
+from os import path, popen, listdir
 
 import page_loader
 import pook
@@ -59,7 +59,12 @@ def test_cli_help_string():
     assert '-o OUTPUT, --output OUTPUT' in result
     assert 'positional arguments:\n  link' in result
     assert 'debug,info,warning,error,critical' in result
-
+    
+    
+def test_cli_log_w_err(tmpdir):
+    result = str(popen('poetry run page-loader -o {0} http://badsite'.format(tmpdir)).read())
+    assert not listdir(tmpdir)
+    
 
 @pook.on
 def test_download_page(tmpdir):
@@ -103,16 +108,3 @@ def test_save_page_error(tmpdir):
     with pytest.raises(page_loader.page_loader.SavePageError):
         page_loader.page_loader.save_page(PATH, PAGE)
         page_loader.page_loader.save_page('//incorrect//file.path', PAGE)
-
-
-@pook.on
-@pytest.mark.parametrize("page_link,file_link,rep", [
-    ('htts://pythonworld.ru/moduli/modul-os-path.html',
-     'pythonworld-ru-moduli-modul-os-path_files', 404)])
-def test_load_page_error(page_link, file_link, rep, tmpdir):
-    PAGE_RESPONSE = read_out_exs('input_page.html')
-    pook.get(page_link, reply=rep, response_body=PAGE_RESPONSE)
-    inquiry = []
-    inquiry.append([page_link, path.join(tmpdir, file_link)],)
-    with pytest.raises(page_loader.page_loader.LoadFileError):
-        page_loader.page_loader.save_files(inquiry)
