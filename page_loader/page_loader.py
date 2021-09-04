@@ -98,7 +98,7 @@ def update_links(page, url, path_to_folder, folder_name):
             if attr in tag.attrs:
                 link = tag[attr]
                 if is_not_out_link(link, url):
-                    logging.debug('sourse to update_link: {0}'.format((url, link, folder_name, tag, attr, link_chain)))
+                    logging.debug('sourse to update_link: {0}'.format((url, link, folder_name, tag, attr)))
                     parsed_link = urlparse(link)
                     parsed_url = urlparse(url)
                     base = parsed_url.netloc
@@ -108,12 +108,14 @@ def update_links(page, url, path_to_folder, folder_name):
                     extra_file_name = get_name(link, is_files=True)
                     path_to_extra_file = path.join(path_to_folder, extra_file_name)
                     path_to_update_file_link = path.join(folder_name, extra_file_name)
-                    logging.debug('updated_link: {0}'.format(path_to_extra_file))
+                    logging.debug('path_to_link: {0}'.format(path_to_extra_file))
+                    logging.debug('updated_link: {0}'.format(path_to_update_file_link))
                     tag[attr] = path_to_update_file_link
+                    logging.debug('tag[attr]: {0}'.format(tag[attr]))
                     link_chain.append((link, path_to_extra_file))
         bar.next()
     bar.finish()
-    changed_page = soup.prettify(formatter="html5")
+    changed_page = soup.prettify(soup.original_encoding)
     return changed_page, link_chain
 
 
