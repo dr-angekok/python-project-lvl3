@@ -61,7 +61,7 @@ def get_name(page_path, is_folder=False, is_files=False, is_log=False):
     if is_folder:
         return '{0}_files'.format(file_path)
     elif is_files:
-        extension = '' if extension == '.html' else extension
+        extension = '.html' if extension == '' else extension
         return '{0}{1}'.format(file_path, extension)
     elif is_log:
         return '{0}{1}'.format(file_path, '.log')
@@ -115,7 +115,7 @@ def update_links(page, url, path_to_folder, folder_name):
                     link_chain.append((link, path_to_extra_file))
         bar.next()
     bar.finish()
-    changed_page = soup.prettify(soup.original_encoding)
+    changed_page = soup.prettify(formatter="html5")
     return changed_page, link_chain
 
 
