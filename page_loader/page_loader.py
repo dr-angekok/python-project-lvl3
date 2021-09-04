@@ -106,7 +106,12 @@ def update_links(page, url, path_to_folder, folder_name, page_file_name):
                     scheme = parsed_url.scheme
                     url_base, url_path = parsed_url.netloc, parsed_url.path
                     if url_base + url_path == link_base + link_path:
-                        pass
+                        link = urlunparse((scheme, url_base, link_path, "", "", ""))
+                        logging.debug('path_to_link: {0}'.format(path_to_extra_file))
+                        tag[attr] = page_file_name
+                        logging.debug('tag[attr]: {0}'.format(tag[attr]))
+                        link_chain.append((link, page_file_name))
+                        
                     else:
                         link = urlunparse((scheme, url_base, link_path, "", "", ""))
                         extra_file_name = get_name(link, is_files=True)
@@ -153,22 +158,16 @@ def save_files(link_chain, page_filename):
     bar.finish()
 
 
-def load_page(link, log_filename):
+def load_page(link):
     try:
         page = requests.get(link)
         page.raise_for_status()
     except (requests.exceptions.InvalidSchema,
             requests.exceptions.MissingSchema):
-        logging.shutdown()
-        remove(log_filename)
         raise LoadPageError('Wrong page address.')
     except requests.exceptions.ConnectionError:
-        logging.shutdown()
-        remove(log_filename)
         raise LoadPageError('Connection error')
     except requests.exceptions.HTTPError:
-        logging.shutdown()
-        remove(log_filename)
         raise LoadPageError('Connection failed')
     return page.text
 
@@ -190,36 +189,16 @@ def make_folder(path_to_folder):
         mkdir(path_to_folder)
     except IOError:
         raise MakeDirError('Path to making folder is not accessible.')
-
-
-def start_logging(log_level, folder, link):
-    """Sets the logging level.
-
-    Args:
-        log_level (str): logging level: debug, info, warning, error, critical.
-        folder (str): a folder to save log file.
-        link (str): Link to page.
-    """
+    
+    
+def set_log_level(log_level):
     logging_levels = {'debug': logging.DEBUG,
                       'warning': logging.WARNING,
                       'error': logging.ERROR,
                       'critical': logging.CRITICAL,
                       'info': logging.INFO}
-    log_filename = path.join(folder, get_name(link, is_log=True))
-       
-    logger = logging.getLogger()
-
-    file_handler = logging.FileHandler(filename=log_filename, mode='w')
-    file_handler.setLevel(logging_levels[log_level])
-
-    stream_handler = logging.StreamHandler(stderr)
-    stream_handler.setLevel(logging.DEBUG)
-
-    logger.addHandler(file_handler)
-    logger.addHandler(stream_handler)
-    
-    logging.info('Start')
-    return log_filename
+    logging.basicConfig(level=logging_levels[log_level])
+    logging.StreamHandler(stderr)
 
 
 def download(link, folder='', log_level='info'):
@@ -230,20 +209,15 @@ def download(link, folder='', log_level='info'):
         folder (str, optional): a folder to save page with files. Defaults to ''.
         log_level (str, optional): logging level: debug', 'info', 'warning', 'error', 'critical'. Defaults to 'info'.
     """
-    log_filename = start_logging(log_level, folder, link)
+    set_log_level(log_level)
     logging.info('Starting load page')
-    bar = IncrementalBar('Loading page  ', max=3)
-    page = load_page(link, log_filename)
-    bar.next()
+    page = load_page(link)
     page_file_name = path.join(folder, get_name(link))
     logging.debug('page filename {0}'.format(page_file_name))
     folder_name = get_name(link, is_folder=True)
     logging.debug('folder name {0}'.format(folder_name))
     path_to_folder = path.join(folder, folder_name)
-    bar.next()
     make_folder(path_to_folder)
-    bar.next()
-    bar.finish()
     logging.info('Starting link update')
     updated_page, page_files_links = update_links(page, link, path_to_folder, folder_name, page_file_name)
     logging.info('Saving page')

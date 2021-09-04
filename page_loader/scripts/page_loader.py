@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Page dounload programm."""
 
+import logging
 from sys import exit
 
 from page_loader import download
@@ -13,7 +14,7 @@ def main():
     try:
         download(path_to_page, path_to_folder, log_level=log_level)
     except Exception as e:
-        print('\nHas error: {0}'.format(e))
+        logging.error('\nHas error: {0}'.format(e))
         exit(1)
     exit()
 
