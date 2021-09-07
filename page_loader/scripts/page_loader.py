@@ -5,12 +5,12 @@ import logging
 from sys import exit
 
 from page_loader import download
-from page_loader.cli import get_arguments
+from page_loader.cli import parse_args
 
 
 def main():
     """Page dounload programm."""
-    path_to_page, path_to_folder, log_level = get_arguments()
+    path_to_page, path_to_folder, log_level = parse_args()
     try:
         page_filename = download(path_to_page, path_to_folder, log_level=log_level)
         print('Page saved at {0}'.format(page_filename))

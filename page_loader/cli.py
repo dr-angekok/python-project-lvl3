@@ -3,7 +3,7 @@
 import argparse
 
 
-def get_arguments():
+def parse_args():
     """Pars command line parameters.
 
     Returns:
