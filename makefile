@@ -19,7 +19,7 @@ package-install-reinstall:
 	python3 -m pip install --user dist/*.whl --force-reinstall
 
 lint:
-	python3 -m poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127
+	python3 -m poetry run flake8
 
 test:
 	python3 -m poetry run pytest
