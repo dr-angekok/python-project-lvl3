@@ -17,7 +17,6 @@ def main():
     except Exception as e:
         logging.error('\nHas error: {0}'.format(e))
         exit(1)
-    exit()
 
 
 if __name__ == '__main__':
