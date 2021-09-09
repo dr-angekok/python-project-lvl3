@@ -1,7 +1,6 @@
 """Load url to files."""
 import logging
 from os import path
-from re import split, sub
 from sys import stderr
 from urllib.parse import urlparse, urlunparse
 
@@ -9,6 +8,7 @@ import requests
 from bs4 import BeautifulSoup
 from progress.bar import IncrementalBar
 
+from page_loader import url
 from page_loader.errors import LoadPageError
 from page_loader.storage import make_folder, save_file, save_page
 
@@ -38,65 +38,7 @@ def load_page(link):
     return page.text
 
 
-def get_file_path(dirty_path):
-    """Clear the path from invalid characters.
-
-    Args:
-        dirty_path (str): input path
-
-    Returns:
-        [str]: clear path
-    """
-    file_path_list = split(r'[\/\.\:]', dirty_path)
-    clear_file_path_list = [world for world in file_path_list if world]
-    return '-'.join(clear_file_path_list)
-
-
-def get_name(page_path, is_folder=False, is_files=False, is_log=False):
-    """Make file name frome path.
-
-    Args:
-        page_path (str): page path
-        is_folder (bool, optional):. Defaults to False.
-        is_files (bool, optional):. Defaults to False.
-        is_log (bool, optional):. Defaults to False.
-
-    Returns:
-        [str]: clear name for page or file
-    """
-    clear_path = sub(r'https://|http://|.html', '', page_path)
-    file_path, extension = path.splitext(clear_path)
-    file_path = get_file_path(file_path)
-    if is_folder:
-        return '{0}_files'.format(file_path)
-    elif is_files:
-        extension = '.html' if extension == '' else extension
-        return '{0}{1}'.format(file_path, extension)
-    elif is_log:
-        return '{0}{1}'.format(file_path, '.log')
-    return '{0}.html'.format(file_path)
-
-
-def is_not_out_link(link, url):
-    """Сheck if the link is on or off the site.
-
-    Args:
-        link (str): local link
-        url (str): page url
-
-    Returns:
-        bool: True / False
-    """
-    parsed_link = urlparse(link)
-    parsed_url = urlparse(url)
-    link_domain = parsed_link.netloc
-    url_domain = parsed_url.netloc
-    if link_domain:
-        return link_domain == url_domain
-    return parsed_link.path
-
-
-def update_links(page, url, path_to_folder, folder_name, page_file_name):
+def update_links(page, _url, path_to_folder, folder_name, page_file_name):
     """Redirects links within the page file to a local resource.
 
     Args:
@@ -115,11 +57,11 @@ def update_links(page, url, path_to_folder, folder_name, page_file_name):
         for attr in ('href', 'src'):
             if attr in tag.attrs:
                 link = tag[attr]
-                if is_not_out_link(link, url):
-                    logging.debug('sourse to update_link: {0}'.format((url, link, folder_name, tag, attr)))
+                if url.is_not_out_link(link, _url):
+                    logging.debug('sourse to update_link: {0}'.format((_url, link, folder_name, tag, attr)))
                     parsed_link = urlparse(link)
                     link_base, link_path = parsed_link.netloc, parsed_link.path
-                    parsed_url = urlparse(url)
+                    parsed_url = urlparse(_url)
                     scheme = parsed_url.scheme
                     url_base, url_path = parsed_url.netloc, parsed_url.path
                     if url_base + url_path == link_base + link_path:
@@ -130,7 +72,7 @@ def update_links(page, url, path_to_folder, folder_name, page_file_name):
                         link_chain.append((link, page_file_name))
                     else:
                         link = urlunparse((scheme, url_base, link_path, "", "", ""))
-                        extra_file_name = get_name(link, is_files=True)
+                        extra_file_name = url.to_filename(link)
                         path_to_extra_file = path.join(path_to_folder, extra_file_name)
                         path_to_update_file_link = path.join(folder_name, extra_file_name)
                         logging.debug('path_to_link: {0}'.format(path_to_extra_file))
@@ -204,9 +146,9 @@ def download(link, folder='', log_level='info'):
     set_log_level(log_level)
     logging.info('Starting load page')
     page = load_page(link)
-    page_file_name = path.join(folder, get_name(link))
+    page_file_name = path.join(folder, url.to_page_filename(link))
     logging.debug('page filename {0}'.format(page_file_name))
-    folder_name = get_name(link, is_folder=True)
+    folder_name = url.to_foldername(link)
     logging.debug('folder name {0}'.format(folder_name))
     path_to_folder = path.join(folder, folder_name)
     make_folder(path_to_folder)

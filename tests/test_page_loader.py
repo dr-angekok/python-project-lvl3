@@ -3,7 +3,6 @@ from os import path
 
 import page_loader
 import pook
-import pytest
 
 
 def make_path(file):
@@ -17,41 +16,8 @@ def read_out_exs(filename):
     return str(out)
 
 
-def load_image(filename):
-    with open(make_path(filename), 'rb') as file:
-        out = file.read()
-    return out
-
-
 def test_version():
     assert page_loader.__version__ == '0.1.0'
-
-
-@pytest.mark.parametrize("link,exs", [
-    ('https://ru.hexlet.io/courses', 'ru-hexlet-io-courses.html'),
-    ('https://pythonworld.ru/moduli/modul-os-path.html',
-     'pythonworld-ru-moduli-modul-os-path.html'),
-    ('http://pythonworld.ru/moduli/modul-os-path.html',
-     'pythonworld-ru-moduli-modul-os-path.html'),
-    ('tproger.ru/translations/regular-expression-python',
-     'tproger-ru-translations-regular-expression-python.html'),
-    ('tproger.ru/translations/regular-expression-python/', 'tproger-ru-translations-regular-expression-python.html')])
-def test_get_name_for_page(link, exs):
-    assert page_loader.page_loader.get_name(link) == exs
-
-
-@pytest.mark.parametrize("link,exs,param1,param2", [
-    ('https://pythonworld.ru/moduli/modul-os-path.html',
-     'pythonworld-ru-moduli-modul-os-path_files', True, False),
-    ('https://pythonworld.ru/moduli/modul-os-path.png',
-     'pythonworld-ru-moduli-modul-os-path.png', False, True),
-    ('pythonworld.ru/moduli/modul-os-path.jpg', 'pythonworld-ru-moduli-modul-os-path.jpg', False, True),
-    ('pythonworld.ru/moduli/modul-os-path', 'pythonworld-ru-moduli-modul-os-path.html', False, True)])
-def test_get_name_for(link, exs, param1, param2):
-    assert page_loader.page_loader.get_name(
-        link, is_folder=param1, is_files=param2) == exs
-    assert page_loader.page_loader.get_name(
-        link, is_folder=param1, is_files=param2) == exs
 
 
 @pook.on
