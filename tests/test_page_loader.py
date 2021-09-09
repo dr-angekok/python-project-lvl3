@@ -1,5 +1,5 @@
 """Test module fore the page_loader."""
-from os import path, popen, listdir
+from os import path
 
 import page_loader
 import pook
@@ -52,18 +52,6 @@ def test_get_name_for(link, exs, param1, param2):
         link, is_folder=param1, is_files=param2) == exs
     assert page_loader.page_loader.get_name(
         link, is_folder=param1, is_files=param2) == exs
-
-
-def test_cli_help_string():
-    result = str(popen('poetry run page-loader -h').read())
-    assert '-o OUTPUT, --output OUTPUT' in result
-    assert 'positional arguments:\n  link' in result
-    assert 'debug,info,warning,error,critical' in result
-
-
-def test_cli_log_w_err(tmpdir):
-    popen('poetry run page-loader -o {0} http://badsite'.format(tmpdir)).read()
-    assert not listdir(tmpdir)
 
 
 @pook.on
