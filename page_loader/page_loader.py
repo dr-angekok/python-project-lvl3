@@ -1,33 +1,41 @@
 """Load url to files."""
 import logging
-from os import mkdir, path
+from os import path
 from re import split, sub
 from sys import stderr
+from urllib.parse import urlparse, urlunparse
 
 import requests
 from bs4 import BeautifulSoup
 from progress.bar import IncrementalBar
-from urllib.parse import urlparse, urlunparse
+
+from page_loader.errors import LoadPageError
+from page_loader.storage import make_folder, save_file, save_page
 
 
-class MakeDirError(Exception):
-    pass
+def load_page(link):
+    """Load page by link.
 
+    Args:
+        link (str): link to download page
 
-class SavePageError(Exception):
-    pass
+    Raises:
+        LoadPageError:
 
-
-class LoadPageError(Exception):
-    pass
-
-
-class SaveFileError(Exception):
-    pass
-
-
-class LoadFileError(Exception):
-    pass
+    Returns:
+        str: loaded page
+    """
+    try:
+        page = requests.get(link)
+        page.raise_for_status()
+    except (requests.exceptions.InvalidSchema,
+            requests.exceptions.MissingSchema):
+        raise LoadPageError('Wrong page address.')
+    except requests.exceptions.ConnectionError:
+        raise LoadPageError('Connection error')
+    except requests.exceptions.HTTPError:
+        raise LoadPageError('Connection failed')
+    return page.text
 
 
 def get_file_path(dirty_path):
@@ -165,75 +173,9 @@ def save_files(link_chain, page_filename):
                 logging.warning('Connection to load file {0} failed'.format(link))
                 bar.next()
                 continue
-
-            try:
-                with open(path_to_file, 'wb') as file:
-                    file.write(source.content)
-            except IOError:
-                raise SaveFileError('Path to saving "{0}" is not accessible.'.format(path_to_file))
+            save_file(path_to_file, source.content)
             bar.next()
     bar.finish()
-
-
-def load_page(link):
-    """Load page by link.
-
-    Args:
-        link (str): link to download page
-
-    Raises:
-        LoadPageError:
-
-    Returns:
-        str: loaded page
-    """
-    try:
-        page = requests.get(link)
-        page.raise_for_status()
-    except (requests.exceptions.InvalidSchema,
-            requests.exceptions.MissingSchema):
-        raise LoadPageError('Wrong page address.')
-    except requests.exceptions.ConnectionError:
-        raise LoadPageError('Connection error')
-    except requests.exceptions.HTTPError:
-        raise LoadPageError('Connection failed')
-    return page.text
-
-
-def save_page(filename, page):
-    """Save page by filename.
-
-    Args:
-        filename (str):
-        page (str):
-
-    Raises:
-        SavePageError:
-    """
-    if path.isfile(filename):
-        raise SavePageError('Page "{0}" is present'.format(filename))
-    try:
-        with open(filename, "w") as file:
-            file.write(page)
-    except IOError:
-        raise SavePageError('Path to saving page is not accessible.')
-
-
-def make_folder(path_to_folder):
-    """Make folder by path.
-
-    Args:
-        path_to_folder (str):
-
-    Raises:
-        MakeDirError: Raises if the path is not reachable or exists.
-    """
-    if path.isdir(path_to_folder):
-        raise MakeDirError('Folder "{0}" is present'.format(path_to_folder))
-    try:
-        mkdir(path_to_folder)
-    except IOError:
-        raise MakeDirError('Path to making folder is not accessible.')
 
 
 def set_log_level(log_level):
