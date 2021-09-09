@@ -1,5 +1,4 @@
-from page_loader.errors import LoadPageError, MakeDirError, SaveFileError, SavePageError
-import requests
+from page_loader.errors import MakeDirError, SaveFileError, SavePageError
 from os import mkdir, path
 
 
