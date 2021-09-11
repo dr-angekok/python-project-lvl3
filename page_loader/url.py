@@ -18,7 +18,7 @@ def get_file_path(dirty_path):
     clear_file_path_list = [world for world in file_path_list if world]
     spiked_name = '-'.join(clear_file_path_list)
     return spiked_name, extension
-    
+
 
 def is_not_out_link(link, url):
     """Сheck if the link is on or off the site.

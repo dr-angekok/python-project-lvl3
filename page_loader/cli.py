@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-"""Cli for the diff make."""
+"""Cli for the page loader."""
 import argparse
 
 

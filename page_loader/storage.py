@@ -36,8 +36,8 @@ def make_folder(path_to_folder):
         mkdir(path_to_folder)
     except IOError:
         raise MakeDirError('Path to making folder is not accessible.')
-    
-    
+
+
 def save_file(path_to_file, content):
     try:
         with open(path_to_file, 'wb') as file:

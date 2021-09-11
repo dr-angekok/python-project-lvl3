@@ -1,4 +1,5 @@
-from os import popen, listdir
+from os import listdir, popen
+
 
 def test_w_cli_help_string():
     result = str(popen('poetry run page-loader -h').read())
