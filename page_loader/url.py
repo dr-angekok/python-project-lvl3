@@ -49,8 +49,6 @@ def to_filename(path):
         str: file-name-extension
     """
     file_path, extension = get_file_path(path)
-    print(file_path)
-    print(extension)
     extension = '.html' if extension == '' else extension
     return '{0}{1}'.format(file_path, extension)
 
