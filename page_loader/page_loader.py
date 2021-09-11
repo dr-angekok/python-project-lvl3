@@ -28,8 +28,6 @@ def load_page(link):
     try:
         page = requests.get(link)
         page.raise_for_status()
-        if page.encoding is None:
-            page.encoding = 'utf-8'
     except (requests.exceptions.InvalidSchema,
             requests.exceptions.MissingSchema):
         raise LoadPageError('Wrong page address.')
@@ -84,7 +82,7 @@ def update_links(page, _url, path_to_folder, folder_name, page_file_name):
                         link_chain.append((link, path_to_extra_file))
         bar.next()
     bar.finish()
-    changed_page = soup.prettify(formatter='html5')
+    changed_page = soup.prettify(formatter="html5")
     return changed_page, link_chain
 
 
