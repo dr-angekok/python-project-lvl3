@@ -49,7 +49,7 @@ def update_links(page, _url, path_to_folder, folder_name, page_file_name):
     Returns:
         [str, tuple]: page and list of links chain
     """
-    soup = BeautifulSoup(page, "lxml")
+    soup = BeautifulSoup(page, "html.parser")
     links = soup.find_all(["script", "img", "link"])
     link_chain = []
     bar = IncrementalBar('Updating links', max=len(links))
