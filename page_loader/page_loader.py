@@ -37,7 +37,7 @@ def load_page(link):
         raise LoadPageError('Connection error')
     except requests.exceptions.HTTPError:
         raise LoadPageError('Connection failed')
-    return page.text
+    return page.content
 
 
 def update_links(page, _url, path_to_folder, folder_name, page_file_name):
@@ -51,7 +51,7 @@ def update_links(page, _url, path_to_folder, folder_name, page_file_name):
     Returns:
         [str, tuple]: page and list of links chain
     """
-    soup = BeautifulSoup(page, "lxml")
+    soup = BeautifulSoup(page, "html.parser")
     links = soup.find_all(["script", "img", "link"])
     link_chain = []
     bar = IncrementalBar('Updating links', max=len(links))
@@ -66,14 +66,13 @@ def update_links(page, _url, path_to_folder, folder_name, page_file_name):
                     parsed_url = urlparse(_url)
                     scheme = parsed_url.scheme
                     url_base, url_path = parsed_url.netloc, parsed_url.path
+                    link = urlunparse((scheme, url_base, link_path, "", "", ""))
                     if url_base + url_path == link_base + link_path:
-                        link = urlunparse((scheme, url_base, link_path, "", "", ""))
                         logging.debug('path_to_link: {0}'.format(page_file_name))
                         tag[attr] = page_file_name
                         logging.debug('tag[attr]: {0}'.format(tag[attr]))
                         link_chain.append((link, page_file_name))
                     else:
-                        link = urlunparse((scheme, url_base, link_path, "", "", ""))
                         extra_file_name = url.to_filename(link)
                         path_to_extra_file = path.join(path_to_folder, extra_file_name)
                         path_to_update_file_link = path.join(folder_name, extra_file_name)
