@@ -36,4 +36,3 @@ def test_download_page(tmpdir):
     assert page_mock.calls == 1
     assert path.isfile('{0}/{1}'.format(PATH_TO_FOLDER, PATH_TO_PAGE))
     assert image_mock.calls == 1
-
