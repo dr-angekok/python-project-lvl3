@@ -1,5 +1,5 @@
-from re import split, sub
 from os import path
+from re import split, sub
 from urllib.parse import urlparse
 
 
