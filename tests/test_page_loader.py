@@ -37,12 +37,3 @@ def test_download_page(tmpdir):
     assert path.isfile('{0}/{1}'.format(PATH_TO_FOLDER, PATH_TO_PAGE))
     assert image_mock.calls == 1
 
-
-def test_update_links():
-    input_page = read_out_exs('input_page.html')
-    output_page = read_out_exs('output_page.html')
-    assert page_loader.page_loader.update_links(input_page,
-                                                'ru-hexlet-io-courses',
-                                                'tmp/ru-hexlet-io-courses_files',
-                                                'ru-hexlet-io-courses_files',
-                                                '')[0] == output_page
