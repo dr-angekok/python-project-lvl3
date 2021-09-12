@@ -1,5 +1,6 @@
 """Cli for the page loader."""
 import argparse
+import page_loader.logging
 
 
 def parse_args():
@@ -15,11 +16,11 @@ def parse_args():
     parser.add_argument('-o', '--output',
                         type=str,
                         default='',
-                        help='folder for saving link')
+                        help='folder for saving downloaded page')
     parser.add_argument('-l', '--level',
                         type=str,
                         default='info',
-                        choices=['debug', 'info', 'warning', 'error', 'critical'],
+                        choices=page_loader.logging.LEVELS.keys(),
                         help='logging level')
     arguments = parser.parse_args()
     return arguments.link, arguments.output, arguments.level

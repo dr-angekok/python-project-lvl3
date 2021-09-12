@@ -1,11 +1,11 @@
 """Load url to files."""
 import logging
 from os import path
-from sys import stderr
 
 import requests
 from progress.bar import IncrementalBar
 
+import page_loader.logging
 from page_loader import url
 from page_loader.errors import LoadPageError
 from page_loader.html import prepare
@@ -73,21 +73,6 @@ def save_files(link_chain, page_filename):
     bar.finish()
 
 
-def set_log_level(log_level):
-    """Setting up logging.
-
-    Args:
-        log_level (str): 'debug', 'info', 'warning', 'error', 'critical'
-    """
-    logging_levels = {'debug': logging.DEBUG,
-                      'warning': logging.WARNING,
-                      'error': logging.ERROR,
-                      'critical': logging.CRITICAL,
-                      'info': logging.INFO}
-    logging.basicConfig(level=logging_levels[log_level])
-    logging.StreamHandler(stderr)
-
-
 def download(link, folder='', log_level='info'):
     """Loads a web page with accompanying files from a link.
 
@@ -96,7 +81,7 @@ def download(link, folder='', log_level='info'):
         folder (str, optional): a folder to save page with files. Defaults to ''.
         log_level (str, optional): logging level: debug', 'info', 'warning', 'error', 'critical'. Defaults to 'info'.
     """
-    set_log_level(log_level)
+    page_loader.logging.setup(log_level)
     logging.info('Starting load page')
     page = load_page(link)
     page_file_name = path.join(folder, url.to_page_filename(link))
