@@ -14,11 +14,7 @@ python = "^3.8"
 
 requests = "^2.26.0"
 
-bs4 = "^0.0.1"
-
-lxml = "^4.6.3"
-
-python-magic = "^0.4.24"
+beautifulsoup4 = "4.9.3"
 
 progress = "^1.6"
 
