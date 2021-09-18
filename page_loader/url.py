@@ -3,7 +3,7 @@ from re import split, sub
 from urllib.parse import urlparse
 
 
-def get_file_path(dirty_path):
+def get_file_path_and_ext(dirty_path):
     """Clear the path from invalid characters and replace it to "-"
 
     Args:
@@ -20,7 +20,7 @@ def get_file_path(dirty_path):
     return spiked_name, extension
 
 
-def is_not_out_link(link, url):
+def is_local(link, url):
     """Сheck if the link is on or off the site.
 
     Args:
@@ -48,7 +48,7 @@ def to_filename(path):
     Returns:
         str: file-name-extension
     """
-    file_path, extension = get_file_path(path)
+    file_path, extension = get_file_path_and_ext(path)
     extension = '.html' if extension == '' else extension
     return '{0}{1}'.format(file_path, extension)
 
@@ -62,7 +62,7 @@ def to_foldername(path):
     Returns:
         str: folder-name-extension_files
     """
-    file_path, _ = get_file_path(path)
+    file_path, _ = get_file_path_and_ext(path)
     return '{0}_files'.format(file_path)
 
 
@@ -75,5 +75,5 @@ def to_page_filename(path):
     Returns:
         str: file-name.html
     """
-    file_path, _ = get_file_path(path)
+    file_path, _ = get_file_path_and_ext(path)
     return '{0}.html'.format(file_path)

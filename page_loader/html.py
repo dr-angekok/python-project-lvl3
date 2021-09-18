@@ -24,7 +24,7 @@ def prepare(page, _url, path_to_folder, folder_name, page_file_name):
         for attr in ('href', 'src'):
             if attr in tag.attrs:
                 link = tag[attr]
-                if url.is_not_out_link(link, _url):
+                if url.is_local(link, _url):
                     parsed_link = urlparse(link)
                     link_base, link_path = parsed_link.netloc, parsed_link.path
                     parsed_url = urlparse(_url)
