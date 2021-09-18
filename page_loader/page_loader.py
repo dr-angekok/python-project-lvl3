@@ -21,9 +21,9 @@ def download_resource(url):
         str: loaded page
     """
     resource = requests.get(url)
-    resource.raise_for_status()
-    if resource.encoding is None:
-        resource.encoding = 'utf-8'
+    if resource.status_code != 200:
+        logging.error('Url not download {0}'.format(url))
+        resource.raise_for_status()
     return resource.content
 
 
@@ -39,29 +39,18 @@ def download_resources(resurses, page_filename, path_to_folder):
     """
     if not resurses:
         return
-
     if not path.exists(path_to_folder):
         mkdir(path_to_folder)
-
-    bar = IncrementalBar('Saving files  ', max=len(resurses))
-    for link, path_to_file in resurses:
+    bar = IncrementalBar('Saving resurses  ', max=len(resurses))
+    for url, path_to_file in resurses:
         if path_to_file != page_filename:
             try:
-                source = requests.get(link, stream=True)
-                source.raise_for_status()
-                logging.info('Successful request from {0}'.format(link))
-            except (requests.exceptions.InvalidSchema,
-                    requests.exceptions.MissingSchema):
+                source = requests.get(url, stream=True)
+                save_content(path_to_file, source.content)
                 bar.next()
-                continue
-            except requests.exceptions.ConnectionError:
-                bar.next()
-                continue
-            except requests.exceptions.HTTPError:
-                bar.next()
-                continue
-            save_content(path_to_file, source.content)
-            bar.next()
+            except (requests.RequestException, OSError) as e:
+                logging.warning('Resource: {0} download error'.format(url))
+                logging.debug('Has error: {0}'.format(e))
     bar.finish()
 
 
