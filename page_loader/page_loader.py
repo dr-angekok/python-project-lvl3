@@ -6,37 +6,25 @@ import requests
 from progress.bar import IncrementalBar
 
 import page_loader.logging
-from page_loader import url
-from page_loader.errors import LoadPageError
+from page_loader import url as _url
 from page_loader.html import prepare
 from page_loader.storage import save_file, save_page
 
 
-def load_page(link):
-    """Load page by link.
+def download_resource(url):
+    """Load resource by url.
 
     Args:
         link (str): link to download page
 
-    Raises:
-        LoadPageError:
-
     Returns:
         str: loaded page
     """
-    try:
-        page = requests.get(link)
-        page.raise_for_status()
-        if page.encoding is None:
-            page.encoding = 'utf-8'
-    except (requests.exceptions.InvalidSchema,
-            requests.exceptions.MissingSchema):
-        raise LoadPageError('Wrong page address.')
-    except requests.exceptions.ConnectionError:
-        raise LoadPageError('Connection error')
-    except requests.exceptions.HTTPError:
-        raise LoadPageError('Connection failed')
-    return page.content
+    resource = requests.get(url)
+    resource.raise_for_status()
+    if resource.encoding is None:
+        resource.encoding = 'utf-8'
+    return resource.content
 
 
 def download_resources(resurses, page_filename, path_to_folder):
@@ -77,7 +65,7 @@ def download_resources(resurses, page_filename, path_to_folder):
     bar.finish()
 
 
-def download(link, folder='', log_level='info'):
+def download(url, folder='', log_level='info'):
     """Loads a web page with accompanying files from a link.
 
     Args:
@@ -86,11 +74,11 @@ def download(link, folder='', log_level='info'):
         log_level (str, optional): logging level: debug', 'info', 'warning', 'error', 'critical'. Defaults to 'info'.
     """
     page_loader.logging.setup(log_level)
-    page = load_page(link)
-    page_file_name = path.join(folder, url.to_page_filename(link))
-    folder_name = url.to_foldername(link)
+    page = download_resource(url)
+    page_file_name = path.join(folder, _url.to_page_filename(url))
+    folder_name = _url.to_foldername(url)
     path_to_folder = path.join(folder, folder_name)
-    updated_page, page_files_links = prepare(page, link, path_to_folder, folder_name, page_file_name)
+    updated_page, page_files_links = prepare(page, url, path_to_folder, folder_name, page_file_name)
     save_page(page_file_name, updated_page)
 
     download_resources(page_files_links, page_file_name, path_to_folder)
