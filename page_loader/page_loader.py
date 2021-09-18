@@ -35,9 +35,6 @@ def download_resources(resurses, page_filename, path_to_folder):
     Args:
         resurses (list): list chain (link, filename to save)
         page_filename (str): main page filename
-
-    Raises:
-        SaveFileError:
     """
     if not resurses:
         return
@@ -69,8 +66,7 @@ def download(url, folder='', log_level='info'):
     page_file_name = path.join(folder, _url.to_page_filename(url))
     folder_name = _url.to_foldername(url)
     path_to_folder = path.join(folder, folder_name)
-    updated_page, page_files_links = prepare(page, url, path_to_folder, folder_name, page_file_name)
+    updated_page, page_files_links = prepare(page, url, path_to_folder, folder_name)
     save_content(page_file_name, updated_page)
-
     download_resources(page_files_links, page_file_name, path_to_folder)
     return page_file_name

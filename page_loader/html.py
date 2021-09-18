@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from page_loader import url
 
 
-def prepare(page, _url, path_to_folder, folder_name, page_file_name):
+def prepare(page, _url, path_to_folder, folder_name):
     """Redirects links within the page file to a local resource.
 
     Args:
@@ -19,7 +19,7 @@ def prepare(page, _url, path_to_folder, folder_name, page_file_name):
     """
     soup = BeautifulSoup(page, "html.parser")
     tags = soup.find_all(["script", "img", "link"])
-    link_chain = []
+    resources = []
     for tag in tags:
         for attr in ('href', 'src'):
             if attr in tag.attrs:
@@ -30,7 +30,7 @@ def prepare(page, _url, path_to_folder, folder_name, page_file_name):
                     path_to_extra_file = path.join(path_to_folder, extra_file_name)
 
                     tag[attr] = path.join(folder_name, extra_file_name)
-                    link_chain.append((full_path_res_url, path_to_extra_file))
+                    resources.append((full_path_res_url, path_to_extra_file))
 
     changed_page = soup.prettify()
-    return changed_page, link_chain
+    return changed_page, resources
