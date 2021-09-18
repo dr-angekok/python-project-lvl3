@@ -2,7 +2,7 @@ from os import path
 
 import pytest
 from page_loader import errors
-from page_loader.storage import make_folder, save_file, save_page
+from page_loader.storage import save_file, save_page
 
 
 def make_path(file):
@@ -14,13 +14,6 @@ def read_out_exs(filename):
     with open(make_path(filename), 'r') as file:
         out = file.read()
     return str(out)
-
-
-def test_make_dir_error():
-    PATH_TO_FOLDER = 'ru-wikipedia-org-wiki-Python'
-    with pytest.raises(errors.MakeDirError):
-        make_folder(PATH_TO_FOLDER)
-        make_folder('//incorrect//dir')
 
 
 def test_save_page_error(tmpdir):

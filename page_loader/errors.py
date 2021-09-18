@@ -1,7 +1,3 @@
-class MakeDirError(Exception):
-    pass
-
-
 class SavePageError(Exception):
     pass
 

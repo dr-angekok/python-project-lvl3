@@ -1,6 +1,6 @@
 """Load url to files."""
 import logging
-from os import path
+from os import mkdir, path
 
 import requests
 from progress.bar import IncrementalBar
@@ -9,7 +9,7 @@ import page_loader.logging
 from page_loader import url
 from page_loader.errors import LoadPageError
 from page_loader.html import prepare
-from page_loader.storage import make_folder, save_file, save_page
+from page_loader.storage import save_file, save_page
 
 
 def load_page(link):
@@ -39,18 +39,24 @@ def load_page(link):
     return page.content
 
 
-def save_files(link_chain, page_filename):
+def download_resources(resurses, page_filename, path_to_folder):
     """Saves link files within the page according to the link - file name chain.
 
     Args:
-        link_chain (list): list chain (link, filename to save)
+        resurses (list): list chain (link, filename to save)
         page_filename (str): main page filename
 
     Raises:
         SaveFileError:
     """
-    bar = IncrementalBar('Saving files  ', max=len(link_chain))
-    for link, path_to_file in link_chain:
+    if not resurses:
+        return
+
+    if not path.exists(path_to_folder):
+        mkdir(path_to_folder)
+
+    bar = IncrementalBar('Saving files  ', max=len(resurses))
+    for link, path_to_file in resurses:
         if path_to_file != page_filename:
             try:
                 source = requests.get(link, stream=True)
@@ -84,8 +90,8 @@ def download(link, folder='', log_level='info'):
     page_file_name = path.join(folder, url.to_page_filename(link))
     folder_name = url.to_foldername(link)
     path_to_folder = path.join(folder, folder_name)
-    make_folder(path_to_folder)
     updated_page, page_files_links = prepare(page, link, path_to_folder, folder_name, page_file_name)
     save_page(page_file_name, updated_page)
-    save_files(page_files_links, page_file_name)
+
+    download_resources(page_files_links, page_file_name, path_to_folder)
     return page_file_name
