@@ -2,7 +2,6 @@ from os import path
 from urllib.parse import urlparse, urlunparse
 
 from bs4 import BeautifulSoup
-from progress.bar import IncrementalBar
 
 from page_loader import url
 
