@@ -28,7 +28,6 @@ def prepare(page, _url, path_to_folder, folder_name, page_file_name):
             if attr in tag.attrs:
                 link = tag[attr]
                 if url.is_not_out_link(link, _url):
-                    logging.debug('sourse to update_link: {0}'.format((_url, link, folder_name, tag, attr)))
                     parsed_link = urlparse(link)
                     link_base, link_path = parsed_link.netloc, parsed_link.path
                     parsed_url = urlparse(_url)
@@ -36,18 +35,13 @@ def prepare(page, _url, path_to_folder, folder_name, page_file_name):
                     url_base, url_path = parsed_url.netloc, parsed_url.path
                     link = urlunparse((scheme, url_base, link_path, '', '', ''))
                     if url_base + url_path == link_base + link_path:
-                        logging.debug('path_to_link: {0}'.format(page_file_name))
                         tag[attr] = page_file_name
-                        logging.debug('tag[attr]: {0}'.format(tag[attr]))
                         link_chain.append((link, page_file_name))
                     else:
                         extra_file_name = url.to_filename(link)
                         path_to_extra_file = path.join(path_to_folder, extra_file_name)
                         path_to_update_file_link = path.join(folder_name, extra_file_name)
-                        logging.debug('path_to_link: {0}'.format(path_to_extra_file))
-                        logging.debug('updated_link: {0}'.format(path_to_update_file_link))
                         tag[attr] = path_to_update_file_link
-                        logging.debug('tag[attr]: {0}'.format(tag[attr]))
                         link_chain.append((link, path_to_extra_file))
         bar.next()
     bar.finish()

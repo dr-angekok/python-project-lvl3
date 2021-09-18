@@ -55,17 +55,15 @@ def save_files(link_chain, page_filename):
             try:
                 source = requests.get(link, stream=True)
                 source.raise_for_status()
+                logging.info('Successful request from {0}'.format(link))
             except (requests.exceptions.InvalidSchema,
                     requests.exceptions.MissingSchema):
-                logging.warning('Wrong file address:{0}'.format(link))
                 bar.next()
                 continue
             except requests.exceptions.ConnectionError:
-                logging.warning('Connection to load file error:{0}'.format(link))
                 bar.next()
                 continue
             except requests.exceptions.HTTPError:
-                logging.warning('Connection to load file {0} failed'.format(link))
                 bar.next()
                 continue
             save_file(path_to_file, source.content)
@@ -82,20 +80,12 @@ def download(link, folder='', log_level='info'):
         log_level (str, optional): logging level: debug', 'info', 'warning', 'error', 'critical'. Defaults to 'info'.
     """
     page_loader.logging.setup(log_level)
-    logging.info('Starting load page')
     page = load_page(link)
     page_file_name = path.join(folder, url.to_page_filename(link))
-    logging.debug('page filename {0}'.format(page_file_name))
     folder_name = url.to_foldername(link)
-    logging.debug('folder name {0}'.format(folder_name))
     path_to_folder = path.join(folder, folder_name)
     make_folder(path_to_folder)
-    logging.info('Starting link update')
     updated_page, page_files_links = prepare(page, link, path_to_folder, folder_name, page_file_name)
-    logging.info('Saving page')
     save_page(page_file_name, updated_page)
-    logging.info('Saving accompanying files')
-    logging.info('Files link count {0}'.format(len(page_files_links)))
     save_files(page_files_links, page_file_name)
-    logging.info('All done')
     return page_file_name

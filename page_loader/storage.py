@@ -1,5 +1,6 @@
 from page_loader.errors import MakeDirError, SaveFileError, SavePageError
 from os import mkdir, path
+import logging
 
 
 def save_page(filename, page):
@@ -17,6 +18,7 @@ def save_page(filename, page):
     try:
         with open(filename, "w") as file:
             file.write(page)
+        logging.info('Saving page at: {0}'.format(filename))
     except IOError:
         raise SavePageError('Path to saving page is not accessible.')
 
@@ -42,5 +44,6 @@ def save_file(path_to_file, content):
     try:
         with open(path_to_file, 'wb') as file:
             file.write(content)
+        logging.info('Saved file {0}'.format(path_to_file))
     except IOError:
         raise SaveFileError('Path to saving "{0}" is not accessible.'.format(path_to_file))
