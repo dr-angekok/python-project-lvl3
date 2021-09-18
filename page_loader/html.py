@@ -1,4 +1,3 @@
-import logging
 from os import path
 from urllib.parse import urlparse, urlunparse
 
@@ -22,7 +21,6 @@ def prepare(page, _url, path_to_folder, folder_name, page_file_name):
     soup = BeautifulSoup(page, "html.parser")
     links = soup.find_all(["script", "img", "link"])
     link_chain = []
-    bar = IncrementalBar('Updating links', max=len(links))
     for tag in links:
         for attr in ('href', 'src'):
             if attr in tag.attrs:
@@ -43,7 +41,5 @@ def prepare(page, _url, path_to_folder, folder_name, page_file_name):
                         path_to_update_file_link = path.join(folder_name, extra_file_name)
                         tag[attr] = path_to_update_file_link
                         link_chain.append((link, path_to_extra_file))
-        bar.next()
-    bar.finish()
     changed_page = soup.prettify(formatter='html5')
     return changed_page, link_chain
