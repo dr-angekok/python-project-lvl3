@@ -40,5 +40,5 @@ def prepare(page, _url, path_to_folder, folder_name, page_file_name):
                         path_to_update_file_link = path.join(folder_name, extra_file_name)
                         tag[attr] = path_to_update_file_link
                         link_chain.append((link, path_to_extra_file))
-    changed_page = soup.prettify(formatter='html5')
+    changed_page = soup.prettify()
     return changed_page, link_chain
