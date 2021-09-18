@@ -26,7 +26,7 @@ def prepare(page, _url, path_to_folder, folder_name, page_file_name):
                 resource_url = tag[attr]
                 if url.is_local(resource_url, _url):
                     full_path_res_url = urljoin(_url, resource_url)
-                    extra_file_name = url.to_filename(resource_url)
+                    extra_file_name = url.to_filename(full_path_res_url)
                     path_to_extra_file = path.join(path_to_folder, extra_file_name)
 
                     tag[attr] = path.join(folder_name, extra_file_name)
