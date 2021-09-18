@@ -1,85 +1,90 @@
 [[package]]
-name = "atomicwrites"
-version = "1.4.0"
-description = "Atomic file writes."
 category = "dev"
+description = "Atomic file writes."
+marker = "sys_platform == \"win32\""
+name = "atomicwrites"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.4.0"
 
 [[package]]
-name = "attrs"
-version = "21.2.0"
-description = "Classes Without Boilerplate"
 category = "dev"
+description = "Classes Without Boilerplate"
+name = "attrs"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+version = "21.2.0"
 
 [package.extras]
-dev = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface", "furo", "sphinx", "sphinx-notfound-page", "pre-commit"]
+dev = ["coverage (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface", "furo", "sphinx", "sphinx-notfound-page", "pre-commit"]
 docs = ["furo", "sphinx", "zope.interface", "sphinx-notfound-page"]
-tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface"]
-tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins"]
+tests = ["coverage (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface"]
+tests_no_zope = ["coverage (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins"]
 
 [[package]]
-name = "beautifulsoup4"
-version = "4.9.3"
-description = "Screen-scraping library"
 category = "main"
+description = "Screen-scraping library"
+name = "beautifulsoup4"
 optional = false
 python-versions = "*"
+version = "4.9.3"
 
 [package.dependencies]
-soupsieve = {version = ">1.2", markers = "python_version >= \"3.0\""}
+[package.dependencies.soupsieve]
+python = ">=3.0"
+version = ">1.2"
 
 [package.extras]
 html5lib = ["html5lib"]
 lxml = ["lxml"]
 
 [[package]]
-name = "certifi"
-version = "2021.5.30"
-description = "Python package for providing Mozilla's CA Bundle."
 category = "main"
+description = "Python package for providing Mozilla's CA Bundle."
+name = "certifi"
 optional = false
 python-versions = "*"
+version = "2021.5.30"
 
 [[package]]
-name = "charset-normalizer"
-version = "2.0.4"
-description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
 category = "main"
+description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
+marker = "python_version >= \"3\""
+name = "charset-normalizer"
 optional = false
 python-versions = ">=3.5.0"
+version = "2.0.6"
 
 [package.extras]
 unicode_backport = ["unicodedata2"]
 
 [[package]]
-name = "colorama"
-version = "0.4.4"
-description = "Cross-platform colored terminal text."
 category = "dev"
+description = "Cross-platform colored terminal text."
+marker = "sys_platform == \"win32\""
+name = "colorama"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+version = "0.4.4"
 
 [[package]]
-name = "coverage"
-version = "5.5"
-description = "Code coverage measurement for Python"
 category = "dev"
+description = "Code coverage measurement for Python"
+name = "coverage"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
+version = "5.5"
 
 [package.extras]
 toml = ["toml"]
 
 [[package]]
-name = "flake8"
-version = "3.9.2"
-description = "the modular source code checker: pep8 pyflakes and co"
 category = "dev"
+description = "the modular source code checker: pep8 pyflakes and co"
+name = "flake8"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
+version = "3.9.2"
 
 [package.dependencies]
 mccabe = ">=0.6.0,<0.7.0"
@@ -87,44 +92,46 @@ pycodestyle = ">=2.7.0,<2.8.0"
 pyflakes = ">=2.3.0,<2.4.0"
 
 [[package]]
-name = "furl"
-version = "2.1.2"
-description = "URL manipulation made simple."
 category = "dev"
+description = "URL manipulation made simple."
+name = "furl"
 optional = false
 python-versions = "*"
+version = "2.1.2"
 
 [package.dependencies]
 orderedmultidict = ">=1.0.1"
 six = ">=1.8.0"
 
 [[package]]
-name = "idna"
-version = "3.2"
-description = "Internationalized Domain Names in Applications (IDNA)"
 category = "main"
+description = "Internationalized Domain Names in Applications (IDNA)"
+marker = "python_version >= \"3\""
+name = "idna"
 optional = false
 python-versions = ">=3.5"
+version = "3.2"
 
 [[package]]
-name = "iniconfig"
-version = "1.1.1"
+category = "dev"
 description = "iniconfig: brain-dead simple config-ini parsing"
-category = "dev"
+name = "iniconfig"
 optional = false
 python-versions = "*"
+version = "1.1.1"
 
 [[package]]
-name = "jsonschema"
-version = "3.2.0"
-description = "An implementation of JSON Schema validation for Python"
 category = "dev"
+description = "An implementation of JSON Schema validation for Python"
+name = "jsonschema"
 optional = false
 python-versions = "*"
+version = "3.2.0"
 
 [package.dependencies]
 attrs = ">=17.4.0"
 pyrsistent = ">=0.14.0"
+setuptools = "*"
 six = ">=1.11.0"
 
 [package.extras]
@@ -132,54 +139,54 @@ format = ["idna", "jsonpointer (>1.13)", "rfc3987", "strict-rfc3339", "webcolors
 format_nongpl = ["idna", "jsonpointer (>1.13)", "webcolors", "rfc3986-validator (>0.1.0)", "rfc3339-validator"]
 
 [[package]]
-name = "mccabe"
-version = "0.6.1"
-description = "McCabe checker, plugin for flake8"
 category = "dev"
+description = "McCabe checker, plugin for flake8"
+name = "mccabe"
 optional = false
 python-versions = "*"
+version = "0.6.1"
 
 [[package]]
-name = "orderedmultidict"
-version = "1.0.1"
-description = "Ordered Multivalue Dictionary"
 category = "dev"
+description = "Ordered Multivalue Dictionary"
+name = "orderedmultidict"
 optional = false
 python-versions = "*"
+version = "1.0.1"
 
 [package.dependencies]
 six = ">=1.8.0"
 
 [[package]]
-name = "packaging"
-version = "21.0"
-description = "Core utilities for Python packages"
 category = "dev"
+description = "Core utilities for Python packages"
+name = "packaging"
 optional = false
 python-versions = ">=3.6"
+version = "21.0"
 
 [package.dependencies]
 pyparsing = ">=2.0.2"
 
 [[package]]
-name = "pluggy"
-version = "1.0.0"
-description = "plugin and hook calling mechanisms for python"
 category = "dev"
+description = "plugin and hook calling mechanisms for python"
+name = "pluggy"
 optional = false
 python-versions = ">=3.6"
+version = "1.0.0"
 
 [package.extras]
 dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
-name = "pook"
-version = "1.0.2"
-description = "HTTP traffic mocking and expectations made easy"
 category = "dev"
+description = "HTTP traffic mocking and expectations made easy"
+name = "pook"
 optional = false
 python-versions = "*"
+version = "1.0.2"
 
 [package.dependencies]
 furl = ">=0.5.6"
@@ -187,65 +194,65 @@ jsonschema = ">=2.5.1"
 xmltodict = ">=0.11.0"
 
 [[package]]
-name = "progress"
-version = "1.6"
-description = "Easy to use progress bars"
 category = "main"
+description = "Easy to use progress bars"
+name = "progress"
 optional = false
 python-versions = "*"
+version = "1.6"
 
 [[package]]
-name = "py"
-version = "1.10.0"
+category = "dev"
 description = "library with cross-python path, ini-parsing, io, code, log facilities"
-category = "dev"
+name = "py"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.10.0"
 
 [[package]]
-name = "pycodestyle"
-version = "2.7.0"
+category = "dev"
 description = "Python style guide checker"
-category = "dev"
+name = "pycodestyle"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "2.7.0"
 
 [[package]]
-name = "pyflakes"
-version = "2.3.1"
+category = "dev"
 description = "passive checker of Python programs"
-category = "dev"
+name = "pyflakes"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "2.3.1"
 
 [[package]]
-name = "pyparsing"
-version = "2.4.7"
-description = "Python parsing module"
 category = "dev"
+description = "Python parsing module"
+name = "pyparsing"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+version = "2.4.7"
 
 [[package]]
-name = "pyrsistent"
-version = "0.18.0"
+category = "dev"
 description = "Persistent/Functional/Immutable data structures"
-category = "dev"
+name = "pyrsistent"
 optional = false
 python-versions = ">=3.6"
+version = "0.18.0"
 
 [[package]]
-name = "pytest"
-version = "6.2.5"
-description = "pytest: simple powerful testing with Python"
 category = "dev"
+description = "pytest: simple powerful testing with Python"
+name = "pytest"
 optional = false
 python-versions = ">=3.6"
+version = "6.2.5"
 
 [package.dependencies]
-atomicwrites = {version = ">=1.0", markers = "sys_platform == \"win32\""}
+atomicwrites = ">=1.0"
 attrs = ">=19.2.0"
-colorama = {version = "*", markers = "sys_platform == \"win32\""}
+colorama = "*"
 iniconfig = "*"
 packaging = "*"
 pluggy = ">=0.12,<2.0"
@@ -256,12 +263,12 @@ toml = "*"
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xmlschema"]
 
 [[package]]
-name = "pytest-cov"
-version = "2.12.1"
-description = "Pytest plugin for measuring coverage."
 category = "dev"
+description = "Pytest plugin for measuring coverage."
+name = "pytest-cov"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+version = "2.12.1"
 
 [package.dependencies]
 coverage = ">=5.2.1"
@@ -272,72 +279,79 @@ toml = "*"
 testing = ["fields", "hunter", "process-tests", "six", "pytest-xdist", "virtualenv"]
 
 [[package]]
-name = "requests"
-version = "2.26.0"
-description = "Python HTTP for Humans."
 category = "main"
+description = "Python HTTP for Humans."
+name = "requests"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
+version = "2.26.0"
 
 [package.dependencies]
 certifi = ">=2017.4.17"
-charset-normalizer = {version = ">=2.0.0,<2.1.0", markers = "python_version >= \"3\""}
-idna = {version = ">=2.5,<4", markers = "python_version >= \"3\""}
 urllib3 = ">=1.21.1,<1.27"
 
+[package.dependencies.charset-normalizer]
+python = ">=3"
+version = ">=2.0.0,<2.1.0"
+
+[package.dependencies.idna]
+python = ">=3"
+version = ">=2.5,<4"
+
 [package.extras]
-socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
+socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7)", "win-inet-pton"]
 use_chardet_on_py3 = ["chardet (>=3.0.2,<5)"]
 
 [[package]]
-name = "six"
-version = "1.16.0"
-description = "Python 2 and 3 compatibility utilities"
 category = "dev"
+description = "Python 2 and 3 compatibility utilities"
+name = "six"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
+version = "1.16.0"
 
 [[package]]
-name = "soupsieve"
-version = "2.2.1"
-description = "A modern CSS selector implementation for Beautiful Soup."
 category = "main"
+description = "A modern CSS selector implementation for Beautiful Soup."
+marker = "python_version >= \"3.0\""
+name = "soupsieve"
 optional = false
 python-versions = ">=3.6"
+version = "2.2.1"
 
 [[package]]
-name = "toml"
-version = "0.10.2"
-description = "Python Library for Tom's Obvious, Minimal Language"
 category = "dev"
+description = "Python Library for Tom's Obvious, Minimal Language"
+name = "toml"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+version = "0.10.2"
 
 [[package]]
-name = "urllib3"
-version = "1.26.6"
-description = "HTTP library with thread-safe connection pooling, file post, and more."
 category = "main"
+description = "HTTP library with thread-safe connection pooling, file post, and more."
+name = "urllib3"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
+version = "1.26.6"
 
 [package.extras]
 brotli = ["brotlipy (>=0.6.0)"]
 secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "certifi", "ipaddress"]
-socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
+socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7,<2.0)"]
 
 [[package]]
-name = "xmltodict"
-version = "0.12.0"
-description = "Makes working with XML feel like you are working with JSON"
 category = "dev"
+description = "Makes working with XML feel like you are working with JSON"
+name = "xmltodict"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "0.12.0"
 
 [metadata]
-lock-version = "1.1"
+content-hash = "c58df6c0f525935bdea93b4b2c062f705627823cf77ed42b9c89205bddc9890f"
+lock-version = "1.0"
 python-versions = "^3.8"
-content-hash = "9074dfb76d49480b04741af86caa5b4ac223c553c27e48a9b5b5dec192c9074a"
 
 [metadata.files]
 atomicwrites = [
@@ -358,8 +372,8 @@ certifi = [
     {file = "certifi-2021.5.30.tar.gz", hash = "sha256:2bbf76fd432960138b3ef6dda3dde0544f27cbf8546c458e60baf371917ba9ee"},
 ]
 charset-normalizer = [
-    {file = "charset-normalizer-2.0.4.tar.gz", hash = "sha256:f23667ebe1084be45f6ae0538e4a5a865206544097e4e8bbcacf42cd02a348f3"},
-    {file = "charset_normalizer-2.0.4-py3-none-any.whl", hash = "sha256:0c8911edd15d19223366a194a513099a302055a962bca2cec0f54b8b63175d8b"},
+    {file = "charset-normalizer-2.0.6.tar.gz", hash = "sha256:5ec46d183433dcbd0ab716f2d7f29d8dee50505b3fdb40c6b985c7c4f5a3591f"},
+    {file = "charset_normalizer-2.0.6-py3-none-any.whl", hash = "sha256:5d209c0a931f215cee683b6445e2d77677e7e75e159f78def0db09d68fafcaa6"},
 ]
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
