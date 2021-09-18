@@ -1,8 +1,8 @@
 from os import path
 
 import pytest
-from page_loader import errors
-from page_loader.storage import save_file, save_page
+
+from page_loader.storage import save_content
 
 
 def make_path(file):
@@ -20,17 +20,17 @@ def test_save_page_error(tmpdir):
     PAGE = read_out_exs('input_page.html')
     PATH_TO_PAGE = 'ru-wikipedia-org-wiki-Python.html'
     PATH = path.join(tmpdir, PATH_TO_PAGE)
-    save_page(PATH, PAGE)
-    with pytest.raises(errors.SavePageError):
-        save_page(PATH, PAGE)
-        save_page('//incorrect//file.path', PAGE)
+    save_content(PATH, PAGE)
+    with pytest.raises(FileNotFoundError):
+        save_content(PATH, PAGE)
+        save_content('//incorrect//file.path', PAGE)
 
 
 def test_save_file_error(tmpdir):
     FILE = bytes(read_out_exs('input_page.html'), 'utf8')
     PATH_TO_PAGE = 'ru-wikipedia-org-wiki-Python.html'
     PATH = path.join(tmpdir, PATH_TO_PAGE)
-    save_file(PATH, FILE)
-    with pytest.raises(errors.SaveFileError):
-        save_file(PATH, FILE)
-        save_file('//incorrect//file.path', FILE)
+    save_content(PATH, FILE)
+    with pytest.raises(FileNotFoundError):
+        save_content(PATH, FILE)
+        save_content('//incorrect//file.path', FILE)
