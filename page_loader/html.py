@@ -1,5 +1,5 @@
 from os import path
-from urllib.parse import urlparse, urlunparse
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
@@ -23,22 +23,14 @@ def prepare(page, _url, path_to_folder, folder_name, page_file_name):
     for tag in tags:
         for attr in ('href', 'src'):
             if attr in tag.attrs:
-                link = tag[attr]
-                if url.is_local(link, _url):
-                    parsed_link = urlparse(link)
-                    link_base, link_path = parsed_link.netloc, parsed_link.path
-                    parsed_url = urlparse(_url)
-                    scheme = parsed_url.scheme
-                    url_base, url_path = parsed_url.netloc, parsed_url.path
-                    link = urlunparse((scheme, url_base, link_path, '', '', ''))
-                    if url_base + url_path == link_base + link_path:
-                        tag[attr] = page_file_name
-                        link_chain.append((link, page_file_name))
-                    else:
-                        extra_file_name = url.to_filename(link)
-                        path_to_extra_file = path.join(path_to_folder, extra_file_name)
-                        path_to_update_file_link = path.join(folder_name, extra_file_name)
-                        tag[attr] = path_to_update_file_link
-                        link_chain.append((link, path_to_extra_file))
+                resource_url = tag[attr]
+                if url.is_local(resource_url, _url):
+                    full_path_res_url = urljoin(_url, resource_url)
+                    extra_file_name = url.to_filename(resource_url)
+                    path_to_extra_file = path.join(path_to_folder, extra_file_name)
+
+                    tag[attr] = path.join(folder_name, extra_file_name)
+                    link_chain.append((full_path_res_url, path_to_extra_file))
+
     changed_page = soup.prettify()
     return changed_page, link_chain
