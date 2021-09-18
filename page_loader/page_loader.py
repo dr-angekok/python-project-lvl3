@@ -24,6 +24,8 @@ def download_resource(url):
     if resource.status_code != 200:
         logging.error('Url not download {0}'.format(url))
         resource.raise_for_status()
+    if resource.encoding is None:
+        resource.encoding = 'utf-8'
     return resource.content
 
 
